@@ -8,75 +8,66 @@
 <body>
   <header>
     <h1>Rust log formatters</h1>
-    <p>For each logger configuration, the same five format-string variants &mdash; <code>{}</code>, <code>{:?}</code>, <code>{:#?}</code>, <code>{name}</code>, and other specs &mdash; rendered as call site (top) and captured output (bottom).</p>
+    <p>Pick a logger; the panel below shows five format-string variants &mdash; <code>{}</code>, <code>{:?}</code>, <code>{:#?}</code>, <code>{name}</code>, and other specs &mdash; with call site and captured output.</p>
   </header>
 
   <aside class="finding">
     <h2>Do <code>log</code> and <code>tracing</code> share the same format?</h2>
-    <p><strong>No.</strong> Switch between the <code>env_logger</code> and <code>tracing-subscriber</code> tabs to see the difference in defaults. The <strong>tracing-log bridge</strong> tab shows what <code>log::info!</code> looks like when routed through <code>tracing-subscriber</code>.</p>
+    <p><strong>No.</strong> Compare <code>env_logger</code> with any of the <code>tracing-subscriber</code> variants at a fixed format spec to see the difference. The <code>tracing-log</code> <strong>bridge</strong> tab shows what <code>log::info!</code> looks like when routed through <code>tracing-subscriber</code>.</p>
   </aside>
 
-  <nav class="tabs" role="tablist" aria-label="Logger">
-    <button class="tab" type="button" data-target="env_logger" aria-selected="true"><code>env_logger</code></button>
-    <button class="tab" type="button" data-target="tracing-subscriber" aria-selected="false"><code>tracing-subscriber</code></button>
-    <button class="tab" type="button" data-target="bridge" aria-selected="false"><code>tracing-log</code> bridge</button>
+  <nav class="tabs" role="tablist" aria-label="Logger" data-axis="top">
+    <button class="tab" type="button" data-top="tracing-subscriber" aria-selected="true"><code>tracing-subscriber</code></button>
+    <button class="tab" type="button" data-top="bridge" aria-selected="false"><code>tracing-log</code> bridge</button>
+    <button class="tab" type="button" data-top="env_logger" aria-selected="false"><code>env_logger</code></button>
   </nav>
 
-  <div class="panels">
-    <section class="panel" data-name="env_logger">
-      <p class="caption">Initialized with <code>env_logger::init()</code>.</p>
-{{env_logger_default.examples}}
-    </section>
+  <nav class="tabs subtabs" role="tablist" aria-label="tracing-subscriber variant" data-axis="sub">
+    <button class="tab" type="button" data-sub="full" aria-selected="true">Full <span class="hint">(default)</span></button>
+    <button class="tab" type="button" data-sub="compact" aria-selected="false">Compact</button>
+    <button class="tab" type="button" data-sub="pretty" aria-selected="false">Pretty</button>
+    <button class="tab" type="button" data-sub="json" aria-selected="false">Json</button>
+  </nav>
 
-    <section class="panel" data-name="tracing-subscriber" hidden>
-      <p class="caption">Initialized with <code>tracing_subscriber::fmt()</code> &mdash; one variant per sub-tab.</p>
-      <nav class="subtabs" role="tablist" aria-label="tracing-subscriber formatter">
-        <button class="subtab" type="button" data-target="full" aria-selected="true">Full <span class="hint">(default)</span></button>
-        <button class="subtab" type="button" data-target="compact" aria-selected="false">Compact</button>
-        <button class="subtab" type="button" data-target="pretty" aria-selected="false">Pretty</button>
-        <button class="subtab" type="button" data-target="json" aria-selected="false">Json</button>
-      </nav>
-      <div class="subpanels">
-        <div class="subpanel" data-name="full">
-{{tracing_full.examples}}
-        </div>
-        <div class="subpanel" data-name="compact" hidden>
-{{tracing_compact.examples}}
-        </div>
-        <div class="subpanel" data-name="pretty" hidden>
-{{tracing_pretty.examples}}
-        </div>
-        <div class="subpanel" data-name="json" hidden>
-{{tracing_json.examples}}
-        </div>
-      </div>
-    </section>
-
-    <section class="panel" data-name="bridge" hidden>
-      <p class="caption"><code>log::info!</code> routed through <code>tracing-subscriber</code> via <code>tracing_log::LogTracer</code>. Output uses tracing's format, not <code>env_logger</code>'s.</p>
-{{tracing_log_bridge.examples}}
-    </section>
+  <div class="panels" data-active-top="tracing-subscriber" data-active-sub="full">
+{{cells}}
   </div>
 
   <script>
-    function wireTabs(navSel) {
-      document.querySelectorAll(navSel).forEach(nav => {
-        const panels = nav.nextElementSibling;
-        if (!panels) return;
-        nav.addEventListener('click', e => {
-          const btn = e.target.closest('button[data-target]');
-          if (!btn) return;
-          const target = btn.dataset.target;
-          nav.querySelectorAll('button[data-target]').forEach(b =>
-            b.setAttribute('aria-selected', b === btn ? 'true' : 'false'));
-          panels.querySelectorAll(':scope > [data-name]').forEach(p => {
-            p.hidden = p.dataset.name !== target;
-          });
-        });
-      });
+    const panels = document.querySelector('.panels');
+    const subtabs = document.querySelector('nav.tabs.subtabs');
+
+    function activeLogger() {
+      const top = panels.dataset.activeTop;
+      const sub = panels.dataset.activeSub;
+      if (top === 'env_logger') return 'env_logger_default';
+      if (top === 'bridge') return 'tracing_log_bridge';
+      return 'tracing_' + sub;
     }
-    wireTabs('.tabs');
-    wireTabs('.subtabs');
+
+    function update() {
+      const logger = activeLogger();
+      panels.querySelectorAll('article.cell').forEach(c => {
+        c.hidden = c.dataset.logger !== logger;
+      });
+      subtabs.classList.toggle('inactive', panels.dataset.activeTop !== 'tracing-subscriber');
+    }
+
+    document.querySelectorAll('nav.tabs').forEach(nav => {
+      const axis = nav.dataset.axis;
+      nav.addEventListener('click', e => {
+        const btn = e.target.closest('button[data-' + axis + ']');
+        if (!btn) return;
+        const value = btn.dataset[axis];
+        nav.querySelectorAll('button').forEach(b =>
+          b.setAttribute('aria-selected', b === btn ? 'true' : 'false'));
+        if (axis === 'top') panels.dataset.activeTop = value;
+        else panels.dataset.activeSub = value;
+        update();
+      });
+    });
+
+    update();
   </script>
 </body>
 </html>

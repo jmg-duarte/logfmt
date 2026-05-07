@@ -100,11 +100,10 @@ fn main() {
     assert!(status.success(), "cargo build failed");
 
     let bin_dir = root.join("target/debug");
-    let mut html = template;
+    let mut cells = String::new();
 
-    for logger in LOGGERS {
-        let mut examples = String::new();
-        for fmt in FORMATS {
+    for (li, logger) in LOGGERS.iter().enumerate() {
+        for (fi, fmt) in FORMATS.iter().enumerate() {
             let out = Command::new(bin_dir.join(logger.bin))
                 .env("RUST_LOG", "info")
                 .env("FMT_KIND", fmt.kind)
@@ -123,26 +122,32 @@ fn main() {
             let cleaned = strip_ansi(&raw);
 
             let snippet = fmt.snippet.replace("<MACRO>", logger.macro_path);
+            let _ = (li, fi);
+            // Initial state matches data-active-top=tracing-subscriber + data-active-sub=full.
+            let hidden_attr = if logger.bin == "tracing_full" { "" } else { " hidden" };
 
-            examples.push_str("        <article class=\"example\">\n");
-            examples.push_str(&format!("          <h3 class=\"example-label\">{}</h3>\n", fmt.label));
-            examples.push_str("          <div class=\"pair\">\n");
-            examples.push_str(&format!(
-                "            <pre class=\"rust\"><code>{}</code></pre>\n",
+            cells.push_str(&format!(
+                "    <article class=\"cell\" data-logger=\"{logger}\" data-format=\"{format}\"{hidden}>\n",
+                logger = logger.bin,
+                format = fmt.kind,
+                hidden = hidden_attr,
+            ));
+            cells.push_str(&format!("      <h3 class=\"cell-label\">{}</h3>\n", fmt.label));
+            cells.push_str("      <div class=\"pair\">\n");
+            cells.push_str(&format!(
+                "        <pre class=\"rust\"><code>{}</code></pre>\n",
                 html_escape(&snippet)
             ));
-            examples.push_str(&format!(
-                "            <pre class=\"output\"><code>{}</code></pre>\n",
+            cells.push_str(&format!(
+                "        <pre class=\"output\"><code>{}</code></pre>\n",
                 html_escape(cleaned.trim_end())
             ));
-            examples.push_str("          </div>\n");
-            examples.push_str("        </article>\n");
+            cells.push_str("      </div>\n");
+            cells.push_str("    </article>\n");
         }
-
-        let placeholder = format!("{{{{{}.examples}}}}", logger.bin);
-        html = html.replace(&placeholder, examples.trim_end());
     }
 
+    let html = template.replace("{{cells}}", cells.trim_end());
     let out_path = root.join("index.html");
     fs::write(&out_path, html).expect("write index.html");
     println!("wrote {}", out_path.display());

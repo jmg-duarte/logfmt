@@ -8,47 +8,52 @@
 <body>
   <header>
     <h1>Rust log formatters</h1>
-    <p>For each logger configuration, the same five format-string variants &mdash; <code>{}</code>, <code>{:?}</code>, <code>{:#?}</code>, <code>{name}</code>, and other specs &mdash; rendered as call site (top) and captured output (bottom).</p>
+    <p>Pick a logger; the panel below shows five format-string variants &mdash; <code>{}</code>, <code>{:?}</code>, <code>{:#?}</code>, <code>{name}</code>, and other specs &mdash; with call site and captured output.</p>
   </header>
 
   <aside class="finding">
     <h2>Do <code>log</code> and <code>tracing</code> share the same format?</h2>
-    <p><strong>No.</strong> Switch between the <code>env_logger</code> and <code>tracing-subscriber</code> tabs to see the difference in defaults. The <strong>tracing-log bridge</strong> tab shows what <code>log::info!</code> looks like when routed through <code>tracing-subscriber</code>.</p>
+    <p><strong>No.</strong> Compare <code>env_logger</code> with any of the <code>tracing-subscriber</code> variants at a fixed format spec to see the difference. The <code>tracing-log</code> <strong>bridge</strong> tab shows what <code>log::info!</code> looks like when routed through <code>tracing-subscriber</code>.</p>
   </aside>
 
-  <nav class="tabs" role="tablist" aria-label="Logger">
-    <button class="tab" type="button" data-target="env_logger" aria-selected="true"><code>env_logger</code></button>
-    <button class="tab" type="button" data-target="tracing-subscriber" aria-selected="false"><code>tracing-subscriber</code></button>
-    <button class="tab" type="button" data-target="bridge" aria-selected="false"><code>tracing-log</code> bridge</button>
+  <nav class="tabs" role="tablist" aria-label="Logger" data-axis="top">
+    <button class="tab" type="button" data-top="tracing-subscriber" aria-selected="true"><code>tracing-subscriber</code></button>
+    <button class="tab" type="button" data-top="bridge" aria-selected="false"><code>tracing-log</code> bridge</button>
+    <button class="tab" type="button" data-top="env_logger" aria-selected="false"><code>env_logger</code></button>
   </nav>
 
-  <div class="panels">
-    <section class="panel" data-name="env_logger">
-      <p class="caption">Initialized with <code>env_logger::init()</code>.</p>
-        <article class="example">
-          <h3 class="example-label"><code>{}</code> &mdash; <code>Display</code></h3>
-          <div class="pair">
-            <pre class="rust"><code>log::info!(&quot;hello {}, the answer is {}&quot;, &quot;world&quot;, 42);</code></pre>
-            <pre class="output"><code>[2026-05-07T18:49:31Z INFO  env_logger_default] hello world, the answer is 42</code></pre>
-          </div>
-        </article>
-        <article class="example">
-          <h3 class="example-label"><code>{:?}</code> &mdash; <code>Debug</code></h3>
-          <div class="pair">
-            <pre class="rust"><code>let users = vec![&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;];
+  <nav class="tabs subtabs" role="tablist" aria-label="tracing-subscriber variant" data-axis="sub">
+    <button class="tab" type="button" data-sub="full" aria-selected="true">Full <span class="hint">(default)</span></button>
+    <button class="tab" type="button" data-sub="compact" aria-selected="false">Compact</button>
+    <button class="tab" type="button" data-sub="pretty" aria-selected="false">Pretty</button>
+    <button class="tab" type="button" data-sub="json" aria-selected="false">Json</button>
+  </nav>
+
+  <div class="panels" data-active-top="tracing-subscriber" data-active-sub="full">
+    <article class="cell" data-logger="env_logger_default" data-format="display" hidden>
+      <h3 class="cell-label"><code>{}</code> &mdash; <code>Display</code></h3>
+      <div class="pair">
+        <pre class="rust"><code>log::info!(&quot;hello {}, the answer is {}&quot;, &quot;world&quot;, 42);</code></pre>
+        <pre class="output"><code>[2026-05-07T19:19:05Z INFO  env_logger_default] hello world, the answer is 42</code></pre>
+      </div>
+    </article>
+    <article class="cell" data-logger="env_logger_default" data-format="debug" hidden>
+      <h3 class="cell-label"><code>{:?}</code> &mdash; <code>Debug</code></h3>
+      <div class="pair">
+        <pre class="rust"><code>let users = vec![&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;];
 log::info!(&quot;users: {:?}&quot;, users);</code></pre>
-            <pre class="output"><code>[2026-05-07T18:49:31Z INFO  env_logger_default] users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]</code></pre>
-          </div>
-        </article>
-        <article class="example">
-          <h3 class="example-label"><code>{:#?}</code> &mdash; pretty <code>Debug</code></h3>
-          <div class="pair">
-            <pre class="rust"><code>#[derive(Debug)]
+        <pre class="output"><code>[2026-05-07T19:19:05Z INFO  env_logger_default] users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]</code></pre>
+      </div>
+    </article>
+    <article class="cell" data-logger="env_logger_default" data-format="pretty_debug" hidden>
+      <h3 class="cell-label"><code>{:#?}</code> &mdash; pretty <code>Debug</code></h3>
+      <div class="pair">
+        <pre class="rust"><code>#[derive(Debug)]
 struct User { name: &amp;'static str, age: u32, roles: Vec&lt;&amp;'static str&gt; }
 
 let user = User { name: &quot;alice&quot;, age: 30, roles: vec![&quot;admin&quot;, &quot;editor&quot;] };
 log::info!(&quot;user: {:#?}&quot;, user);</code></pre>
-            <pre class="output"><code>[2026-05-07T18:49:31Z INFO  env_logger_default] user: User {
+        <pre class="output"><code>[2026-05-07T19:19:05Z INFO  env_logger_default] user: User {
         name: &quot;alice&quot;,
         age: 30,
         roles: [
@@ -56,61 +61,49 @@ log::info!(&quot;user: {:#?}&quot;, user);</code></pre>
             &quot;editor&quot;,
         ],
     }</code></pre>
-          </div>
-        </article>
-        <article class="example">
-          <h3 class="example-label"><code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)</h3>
-          <div class="pair">
-            <pre class="rust"><code>let name = &quot;alice&quot;;
+      </div>
+    </article>
+    <article class="cell" data-logger="env_logger_default" data-format="named" hidden>
+      <h3 class="cell-label"><code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)</h3>
+      <div class="pair">
+        <pre class="rust"><code>let name = &quot;alice&quot;;
 let age = 30;
 log::info!(&quot;user {name} is {age} years old&quot;);</code></pre>
-            <pre class="output"><code>[2026-05-07T18:49:31Z INFO  env_logger_default] user alice is 30 years old</code></pre>
-          </div>
-        </article>
-        <article class="example">
-          <h3 class="example-label"><code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary</h3>
-          <div class="pair">
-            <pre class="rust"><code>let n = 255u32;
+        <pre class="output"><code>[2026-05-07T19:19:05Z INFO  env_logger_default] user alice is 30 years old</code></pre>
+      </div>
+    </article>
+    <article class="cell" data-logger="env_logger_default" data-format="other" hidden>
+      <h3 class="cell-label"><code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary</h3>
+      <div class="pair">
+        <pre class="rust"><code>let n = 255u32;
 log::info!(&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;, n, n, 3.14159, n);</code></pre>
-            <pre class="output"><code>[2026-05-07T18:49:31Z INFO  env_logger_default] hex=ff  padded=  255  precision=3.14  binary=11111111</code></pre>
-          </div>
-        </article>
-    </section>
-
-    <section class="panel" data-name="tracing-subscriber" hidden>
-      <p class="caption">Initialized with <code>tracing_subscriber::fmt()</code> &mdash; one variant per sub-tab.</p>
-      <nav class="subtabs" role="tablist" aria-label="tracing-subscriber formatter">
-        <button class="subtab" type="button" data-target="full" aria-selected="true">Full <span class="hint">(default)</span></button>
-        <button class="subtab" type="button" data-target="compact" aria-selected="false">Compact</button>
-        <button class="subtab" type="button" data-target="pretty" aria-selected="false">Pretty</button>
-        <button class="subtab" type="button" data-target="json" aria-selected="false">Json</button>
-      </nav>
-      <div class="subpanels">
-        <div class="subpanel" data-name="full">
-        <article class="example">
-          <h3 class="example-label"><code>{}</code> &mdash; <code>Display</code></h3>
-          <div class="pair">
-            <pre class="rust"><code>tracing::info!(&quot;hello {}, the answer is {}&quot;, &quot;world&quot;, 42);</code></pre>
-            <pre class="output"><code>2026-05-07T18:49:31.971689Z  INFO tracing_full: hello world, the answer is 42</code></pre>
-          </div>
-        </article>
-        <article class="example">
-          <h3 class="example-label"><code>{:?}</code> &mdash; <code>Debug</code></h3>
-          <div class="pair">
-            <pre class="rust"><code>let users = vec![&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;];
+        <pre class="output"><code>[2026-05-07T19:19:05Z INFO  env_logger_default] hex=ff  padded=  255  precision=3.14  binary=11111111</code></pre>
+      </div>
+    </article>
+    <article class="cell" data-logger="tracing_full" data-format="display">
+      <h3 class="cell-label"><code>{}</code> &mdash; <code>Display</code></h3>
+      <div class="pair">
+        <pre class="rust"><code>tracing::info!(&quot;hello {}, the answer is {}&quot;, &quot;world&quot;, 42);</code></pre>
+        <pre class="output"><code>2026-05-07T19:19:05.737207Z  INFO tracing_full: hello world, the answer is 42</code></pre>
+      </div>
+    </article>
+    <article class="cell" data-logger="tracing_full" data-format="debug">
+      <h3 class="cell-label"><code>{:?}</code> &mdash; <code>Debug</code></h3>
+      <div class="pair">
+        <pre class="rust"><code>let users = vec![&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;];
 tracing::info!(&quot;users: {:?}&quot;, users);</code></pre>
-            <pre class="output"><code>2026-05-07T18:49:31.976002Z  INFO tracing_full: users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]</code></pre>
-          </div>
-        </article>
-        <article class="example">
-          <h3 class="example-label"><code>{:#?}</code> &mdash; pretty <code>Debug</code></h3>
-          <div class="pair">
-            <pre class="rust"><code>#[derive(Debug)]
+        <pre class="output"><code>2026-05-07T19:19:05.740052Z  INFO tracing_full: users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]</code></pre>
+      </div>
+    </article>
+    <article class="cell" data-logger="tracing_full" data-format="pretty_debug">
+      <h3 class="cell-label"><code>{:#?}</code> &mdash; pretty <code>Debug</code></h3>
+      <div class="pair">
+        <pre class="rust"><code>#[derive(Debug)]
 struct User { name: &amp;'static str, age: u32, roles: Vec&lt;&amp;'static str&gt; }
 
 let user = User { name: &quot;alice&quot;, age: 30, roles: vec![&quot;admin&quot;, &quot;editor&quot;] };
 tracing::info!(&quot;user: {:#?}&quot;, user);</code></pre>
-            <pre class="output"><code>2026-05-07T18:49:31.978848Z  INFO tracing_full: user: User {
+        <pre class="output"><code>2026-05-07T19:19:05.742636Z  INFO tracing_full: user: User {
     name: &quot;alice&quot;,
     age: 30,
     roles: [
@@ -118,51 +111,49 @@ tracing::info!(&quot;user: {:#?}&quot;, user);</code></pre>
         &quot;editor&quot;,
     ],
 }</code></pre>
-          </div>
-        </article>
-        <article class="example">
-          <h3 class="example-label"><code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)</h3>
-          <div class="pair">
-            <pre class="rust"><code>let name = &quot;alice&quot;;
+      </div>
+    </article>
+    <article class="cell" data-logger="tracing_full" data-format="named">
+      <h3 class="cell-label"><code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)</h3>
+      <div class="pair">
+        <pre class="rust"><code>let name = &quot;alice&quot;;
 let age = 30;
 tracing::info!(&quot;user {name} is {age} years old&quot;);</code></pre>
-            <pre class="output"><code>2026-05-07T18:49:31.981279Z  INFO tracing_full: user alice is 30 years old</code></pre>
-          </div>
-        </article>
-        <article class="example">
-          <h3 class="example-label"><code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary</h3>
-          <div class="pair">
-            <pre class="rust"><code>let n = 255u32;
+        <pre class="output"><code>2026-05-07T19:19:05.744549Z  INFO tracing_full: user alice is 30 years old</code></pre>
+      </div>
+    </article>
+    <article class="cell" data-logger="tracing_full" data-format="other">
+      <h3 class="cell-label"><code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary</h3>
+      <div class="pair">
+        <pre class="rust"><code>let n = 255u32;
 tracing::info!(&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;, n, n, 3.14159, n);</code></pre>
-            <pre class="output"><code>2026-05-07T18:49:31.983938Z  INFO tracing_full: hex=ff  padded=  255  precision=3.14  binary=11111111</code></pre>
-          </div>
-        </article>
-        </div>
-        <div class="subpanel" data-name="compact" hidden>
-        <article class="example">
-          <h3 class="example-label"><code>{}</code> &mdash; <code>Display</code></h3>
-          <div class="pair">
-            <pre class="rust"><code>tracing::info!(&quot;hello {}, the answer is {}&quot;, &quot;world&quot;, 42);</code></pre>
-            <pre class="output"><code>2026-05-07T18:49:32.113791Z  INFO tracing_compact: hello world, the answer is 42</code></pre>
-          </div>
-        </article>
-        <article class="example">
-          <h3 class="example-label"><code>{:?}</code> &mdash; <code>Debug</code></h3>
-          <div class="pair">
-            <pre class="rust"><code>let users = vec![&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;];
+        <pre class="output"><code>2026-05-07T19:19:05.746831Z  INFO tracing_full: hex=ff  padded=  255  precision=3.14  binary=11111111</code></pre>
+      </div>
+    </article>
+    <article class="cell" data-logger="tracing_compact" data-format="display" hidden>
+      <h3 class="cell-label"><code>{}</code> &mdash; <code>Display</code></h3>
+      <div class="pair">
+        <pre class="rust"><code>tracing::info!(&quot;hello {}, the answer is {}&quot;, &quot;world&quot;, 42);</code></pre>
+        <pre class="output"><code>2026-05-07T19:19:05.868376Z  INFO tracing_compact: hello world, the answer is 42</code></pre>
+      </div>
+    </article>
+    <article class="cell" data-logger="tracing_compact" data-format="debug" hidden>
+      <h3 class="cell-label"><code>{:?}</code> &mdash; <code>Debug</code></h3>
+      <div class="pair">
+        <pre class="rust"><code>let users = vec![&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;];
 tracing::info!(&quot;users: {:?}&quot;, users);</code></pre>
-            <pre class="output"><code>2026-05-07T18:49:32.116833Z  INFO tracing_compact: users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]</code></pre>
-          </div>
-        </article>
-        <article class="example">
-          <h3 class="example-label"><code>{:#?}</code> &mdash; pretty <code>Debug</code></h3>
-          <div class="pair">
-            <pre class="rust"><code>#[derive(Debug)]
+        <pre class="output"><code>2026-05-07T19:19:05.872136Z  INFO tracing_compact: users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]</code></pre>
+      </div>
+    </article>
+    <article class="cell" data-logger="tracing_compact" data-format="pretty_debug" hidden>
+      <h3 class="cell-label"><code>{:#?}</code> &mdash; pretty <code>Debug</code></h3>
+      <div class="pair">
+        <pre class="rust"><code>#[derive(Debug)]
 struct User { name: &amp;'static str, age: u32, roles: Vec&lt;&amp;'static str&gt; }
 
 let user = User { name: &quot;alice&quot;, age: 30, roles: vec![&quot;admin&quot;, &quot;editor&quot;] };
 tracing::info!(&quot;user: {:#?}&quot;, user);</code></pre>
-            <pre class="output"><code>2026-05-07T18:49:32.119169Z  INFO tracing_compact: user: User {
+        <pre class="output"><code>2026-05-07T19:19:05.874858Z  INFO tracing_compact: user: User {
     name: &quot;alice&quot;,
     age: 30,
     roles: [
@@ -170,53 +161,51 @@ tracing::info!(&quot;user: {:#?}&quot;, user);</code></pre>
         &quot;editor&quot;,
     ],
 }</code></pre>
-          </div>
-        </article>
-        <article class="example">
-          <h3 class="example-label"><code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)</h3>
-          <div class="pair">
-            <pre class="rust"><code>let name = &quot;alice&quot;;
+      </div>
+    </article>
+    <article class="cell" data-logger="tracing_compact" data-format="named" hidden>
+      <h3 class="cell-label"><code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)</h3>
+      <div class="pair">
+        <pre class="rust"><code>let name = &quot;alice&quot;;
 let age = 30;
 tracing::info!(&quot;user {name} is {age} years old&quot;);</code></pre>
-            <pre class="output"><code>2026-05-07T18:49:32.121658Z  INFO tracing_compact: user alice is 30 years old</code></pre>
-          </div>
-        </article>
-        <article class="example">
-          <h3 class="example-label"><code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary</h3>
-          <div class="pair">
-            <pre class="rust"><code>let n = 255u32;
+        <pre class="output"><code>2026-05-07T19:19:05.877313Z  INFO tracing_compact: user alice is 30 years old</code></pre>
+      </div>
+    </article>
+    <article class="cell" data-logger="tracing_compact" data-format="other" hidden>
+      <h3 class="cell-label"><code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary</h3>
+      <div class="pair">
+        <pre class="rust"><code>let n = 255u32;
 tracing::info!(&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;, n, n, 3.14159, n);</code></pre>
-            <pre class="output"><code>2026-05-07T18:49:32.124044Z  INFO tracing_compact: hex=ff  padded=  255  precision=3.14  binary=11111111</code></pre>
-          </div>
-        </article>
-        </div>
-        <div class="subpanel" data-name="pretty" hidden>
-        <article class="example">
-          <h3 class="example-label"><code>{}</code> &mdash; <code>Display</code></h3>
-          <div class="pair">
-            <pre class="rust"><code>tracing::info!(&quot;hello {}, the answer is {}&quot;, &quot;world&quot;, 42);</code></pre>
-            <pre class="output"><code>  2026-05-07T18:49:32.254601Z  INFO tracing_pretty: hello world, the answer is 42
+        <pre class="output"><code>2026-05-07T19:19:05.879663Z  INFO tracing_compact: hex=ff  padded=  255  precision=3.14  binary=11111111</code></pre>
+      </div>
+    </article>
+    <article class="cell" data-logger="tracing_pretty" data-format="display" hidden>
+      <h3 class="cell-label"><code>{}</code> &mdash; <code>Display</code></h3>
+      <div class="pair">
+        <pre class="rust"><code>tracing::info!(&quot;hello {}, the answer is {}&quot;, &quot;world&quot;, 42);</code></pre>
+        <pre class="output"><code>  2026-05-07T19:19:06.002411Z  INFO tracing_pretty: hello world, the answer is 42
     at src/bin/tracing_pretty.rs:14</code></pre>
-          </div>
-        </article>
-        <article class="example">
-          <h3 class="example-label"><code>{:?}</code> &mdash; <code>Debug</code></h3>
-          <div class="pair">
-            <pre class="rust"><code>let users = vec![&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;];
+      </div>
+    </article>
+    <article class="cell" data-logger="tracing_pretty" data-format="debug" hidden>
+      <h3 class="cell-label"><code>{:?}</code> &mdash; <code>Debug</code></h3>
+      <div class="pair">
+        <pre class="rust"><code>let users = vec![&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;];
 tracing::info!(&quot;users: {:?}&quot;, users);</code></pre>
-            <pre class="output"><code>  2026-05-07T18:49:32.258139Z  INFO tracing_pretty: users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]
+        <pre class="output"><code>  2026-05-07T19:19:06.004598Z  INFO tracing_pretty: users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]
     at src/bin/tracing_pretty.rs:18</code></pre>
-          </div>
-        </article>
-        <article class="example">
-          <h3 class="example-label"><code>{:#?}</code> &mdash; pretty <code>Debug</code></h3>
-          <div class="pair">
-            <pre class="rust"><code>#[derive(Debug)]
+      </div>
+    </article>
+    <article class="cell" data-logger="tracing_pretty" data-format="pretty_debug" hidden>
+      <h3 class="cell-label"><code>{:#?}</code> &mdash; pretty <code>Debug</code></h3>
+      <div class="pair">
+        <pre class="rust"><code>#[derive(Debug)]
 struct User { name: &amp;'static str, age: u32, roles: Vec&lt;&amp;'static str&gt; }
 
 let user = User { name: &quot;alice&quot;, age: 30, roles: vec![&quot;admin&quot;, &quot;editor&quot;] };
 tracing::info!(&quot;user: {:#?}&quot;, user);</code></pre>
-            <pre class="output"><code>  2026-05-07T18:49:32.260034Z  INFO tracing_pretty: user: User {
+        <pre class="output"><code>  2026-05-07T19:19:06.006570Z  INFO tracing_pretty: user: User {
     name: &quot;alice&quot;,
     age: 30,
     roles: [
@@ -225,102 +214,94 @@ tracing::info!(&quot;user: {:#?}&quot;, user);</code></pre>
     ],
 }
     at src/bin/tracing_pretty.rs:22</code></pre>
-          </div>
-        </article>
-        <article class="example">
-          <h3 class="example-label"><code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)</h3>
-          <div class="pair">
-            <pre class="rust"><code>let name = &quot;alice&quot;;
+      </div>
+    </article>
+    <article class="cell" data-logger="tracing_pretty" data-format="named" hidden>
+      <h3 class="cell-label"><code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)</h3>
+      <div class="pair">
+        <pre class="rust"><code>let name = &quot;alice&quot;;
 let age = 30;
 tracing::info!(&quot;user {name} is {age} years old&quot;);</code></pre>
-            <pre class="output"><code>  2026-05-07T18:49:32.262040Z  INFO tracing_pretty: user alice is 30 years old
+        <pre class="output"><code>  2026-05-07T19:19:06.008318Z  INFO tracing_pretty: user alice is 30 years old
     at src/bin/tracing_pretty.rs:27</code></pre>
-          </div>
-        </article>
-        <article class="example">
-          <h3 class="example-label"><code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary</h3>
-          <div class="pair">
-            <pre class="rust"><code>let n = 255u32;
+      </div>
+    </article>
+    <article class="cell" data-logger="tracing_pretty" data-format="other" hidden>
+      <h3 class="cell-label"><code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary</h3>
+      <div class="pair">
+        <pre class="rust"><code>let n = 255u32;
 tracing::info!(&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;, n, n, 3.14159, n);</code></pre>
-            <pre class="output"><code>  2026-05-07T18:49:32.263624Z  INFO tracing_pretty: hex=ff  padded=  255  precision=3.14  binary=11111111
+        <pre class="output"><code>  2026-05-07T19:19:06.010478Z  INFO tracing_pretty: hex=ff  padded=  255  precision=3.14  binary=11111111
     at src/bin/tracing_pretty.rs:31</code></pre>
-          </div>
-        </article>
-        </div>
-        <div class="subpanel" data-name="json" hidden>
-        <article class="example">
-          <h3 class="example-label"><code>{}</code> &mdash; <code>Display</code></h3>
-          <div class="pair">
-            <pre class="rust"><code>tracing::info!(&quot;hello {}, the answer is {}&quot;, &quot;world&quot;, 42);</code></pre>
-            <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T18:49:32.398454Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;hello world, the answer is 42&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
-          </div>
-        </article>
-        <article class="example">
-          <h3 class="example-label"><code>{:?}</code> &mdash; <code>Debug</code></h3>
-          <div class="pair">
-            <pre class="rust"><code>let users = vec![&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;];
+      </div>
+    </article>
+    <article class="cell" data-logger="tracing_json" data-format="display" hidden>
+      <h3 class="cell-label"><code>{}</code> &mdash; <code>Display</code></h3>
+      <div class="pair">
+        <pre class="rust"><code>tracing::info!(&quot;hello {}, the answer is {}&quot;, &quot;world&quot;, 42);</code></pre>
+        <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T19:19:06.142364Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;hello world, the answer is 42&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
+      </div>
+    </article>
+    <article class="cell" data-logger="tracing_json" data-format="debug" hidden>
+      <h3 class="cell-label"><code>{:?}</code> &mdash; <code>Debug</code></h3>
+      <div class="pair">
+        <pre class="rust"><code>let users = vec![&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;];
 tracing::info!(&quot;users: {:?}&quot;, users);</code></pre>
-            <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T18:49:32.401008Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;users: [\&quot;alice\&quot;, \&quot;bob\&quot;, \&quot;charlie\&quot;]&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
-          </div>
-        </article>
-        <article class="example">
-          <h3 class="example-label"><code>{:#?}</code> &mdash; pretty <code>Debug</code></h3>
-          <div class="pair">
-            <pre class="rust"><code>#[derive(Debug)]
+        <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T19:19:06.144906Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;users: [\&quot;alice\&quot;, \&quot;bob\&quot;, \&quot;charlie\&quot;]&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
+      </div>
+    </article>
+    <article class="cell" data-logger="tracing_json" data-format="pretty_debug" hidden>
+      <h3 class="cell-label"><code>{:#?}</code> &mdash; pretty <code>Debug</code></h3>
+      <div class="pair">
+        <pre class="rust"><code>#[derive(Debug)]
 struct User { name: &amp;'static str, age: u32, roles: Vec&lt;&amp;'static str&gt; }
 
 let user = User { name: &quot;alice&quot;, age: 30, roles: vec![&quot;admin&quot;, &quot;editor&quot;] };
 tracing::info!(&quot;user: {:#?}&quot;, user);</code></pre>
-            <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T18:49:32.403530Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;user: User {\n    name: \&quot;alice\&quot;,\n    age: 30,\n    roles: [\n        \&quot;admin\&quot;,\n        \&quot;editor\&quot;,\n    ],\n}&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
-          </div>
-        </article>
-        <article class="example">
-          <h3 class="example-label"><code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)</h3>
-          <div class="pair">
-            <pre class="rust"><code>let name = &quot;alice&quot;;
+        <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T19:19:06.147175Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;user: User {\n    name: \&quot;alice\&quot;,\n    age: 30,\n    roles: [\n        \&quot;admin\&quot;,\n        \&quot;editor\&quot;,\n    ],\n}&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
+      </div>
+    </article>
+    <article class="cell" data-logger="tracing_json" data-format="named" hidden>
+      <h3 class="cell-label"><code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)</h3>
+      <div class="pair">
+        <pre class="rust"><code>let name = &quot;alice&quot;;
 let age = 30;
 tracing::info!(&quot;user {name} is {age} years old&quot;);</code></pre>
-            <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T18:49:32.405704Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;user alice is 30 years old&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
-          </div>
-        </article>
-        <article class="example">
-          <h3 class="example-label"><code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary</h3>
-          <div class="pair">
-            <pre class="rust"><code>let n = 255u32;
-tracing::info!(&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;, n, n, 3.14159, n);</code></pre>
-            <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T18:49:32.407716Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;hex=ff  padded=  255  precision=3.14  binary=11111111&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
-          </div>
-        </article>
-        </div>
+        <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T19:19:06.149217Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;user alice is 30 years old&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
       </div>
-    </section>
-
-    <section class="panel" data-name="bridge" hidden>
-      <p class="caption"><code>log::info!</code> routed through <code>tracing-subscriber</code> via <code>tracing_log::LogTracer</code>. Output uses tracing's format, not <code>env_logger</code>'s.</p>
-        <article class="example">
-          <h3 class="example-label"><code>{}</code> &mdash; <code>Display</code></h3>
-          <div class="pair">
-            <pre class="rust"><code>log::info!(&quot;hello {}, the answer is {}&quot;, &quot;world&quot;, 42);</code></pre>
-            <pre class="output"><code>2026-05-07T18:49:32.567809Z  INFO tracing_log_bridge: hello world, the answer is 42</code></pre>
-          </div>
-        </article>
-        <article class="example">
-          <h3 class="example-label"><code>{:?}</code> &mdash; <code>Debug</code></h3>
-          <div class="pair">
-            <pre class="rust"><code>let users = vec![&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;];
+    </article>
+    <article class="cell" data-logger="tracing_json" data-format="other" hidden>
+      <h3 class="cell-label"><code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary</h3>
+      <div class="pair">
+        <pre class="rust"><code>let n = 255u32;
+tracing::info!(&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;, n, n, 3.14159, n);</code></pre>
+        <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T19:19:06.151209Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;hex=ff  padded=  255  precision=3.14  binary=11111111&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
+      </div>
+    </article>
+    <article class="cell" data-logger="tracing_log_bridge" data-format="display" hidden>
+      <h3 class="cell-label"><code>{}</code> &mdash; <code>Display</code></h3>
+      <div class="pair">
+        <pre class="rust"><code>log::info!(&quot;hello {}, the answer is {}&quot;, &quot;world&quot;, 42);</code></pre>
+        <pre class="output"><code>2026-05-07T19:19:06.291384Z  INFO tracing_log_bridge: hello world, the answer is 42</code></pre>
+      </div>
+    </article>
+    <article class="cell" data-logger="tracing_log_bridge" data-format="debug" hidden>
+      <h3 class="cell-label"><code>{:?}</code> &mdash; <code>Debug</code></h3>
+      <div class="pair">
+        <pre class="rust"><code>let users = vec![&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;];
 log::info!(&quot;users: {:?}&quot;, users);</code></pre>
-            <pre class="output"><code>2026-05-07T18:49:32.569967Z  INFO tracing_log_bridge: users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]</code></pre>
-          </div>
-        </article>
-        <article class="example">
-          <h3 class="example-label"><code>{:#?}</code> &mdash; pretty <code>Debug</code></h3>
-          <div class="pair">
-            <pre class="rust"><code>#[derive(Debug)]
+        <pre class="output"><code>2026-05-07T19:19:06.296158Z  INFO tracing_log_bridge: users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]</code></pre>
+      </div>
+    </article>
+    <article class="cell" data-logger="tracing_log_bridge" data-format="pretty_debug" hidden>
+      <h3 class="cell-label"><code>{:#?}</code> &mdash; pretty <code>Debug</code></h3>
+      <div class="pair">
+        <pre class="rust"><code>#[derive(Debug)]
 struct User { name: &amp;'static str, age: u32, roles: Vec&lt;&amp;'static str&gt; }
 
 let user = User { name: &quot;alice&quot;, age: 30, roles: vec![&quot;admin&quot;, &quot;editor&quot;] };
 log::info!(&quot;user: {:#?}&quot;, user);</code></pre>
-            <pre class="output"><code>2026-05-07T18:49:32.571768Z  INFO tracing_log_bridge: user: User {
+        <pre class="output"><code>2026-05-07T19:19:06.299088Z  INFO tracing_log_bridge: user: User {
     name: &quot;alice&quot;,
     age: 30,
     roles: [
@@ -328,47 +309,62 @@ log::info!(&quot;user: {:#?}&quot;, user);</code></pre>
         &quot;editor&quot;,
     ],
 }</code></pre>
-          </div>
-        </article>
-        <article class="example">
-          <h3 class="example-label"><code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)</h3>
-          <div class="pair">
-            <pre class="rust"><code>let name = &quot;alice&quot;;
+      </div>
+    </article>
+    <article class="cell" data-logger="tracing_log_bridge" data-format="named" hidden>
+      <h3 class="cell-label"><code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)</h3>
+      <div class="pair">
+        <pre class="rust"><code>let name = &quot;alice&quot;;
 let age = 30;
 log::info!(&quot;user {name} is {age} years old&quot;);</code></pre>
-            <pre class="output"><code>2026-05-07T18:49:32.573550Z  INFO tracing_log_bridge: user alice is 30 years old</code></pre>
-          </div>
-        </article>
-        <article class="example">
-          <h3 class="example-label"><code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary</h3>
-          <div class="pair">
-            <pre class="rust"><code>let n = 255u32;
+        <pre class="output"><code>2026-05-07T19:19:06.300999Z  INFO tracing_log_bridge: user alice is 30 years old</code></pre>
+      </div>
+    </article>
+    <article class="cell" data-logger="tracing_log_bridge" data-format="other" hidden>
+      <h3 class="cell-label"><code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary</h3>
+      <div class="pair">
+        <pre class="rust"><code>let n = 255u32;
 log::info!(&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;, n, n, 3.14159, n);</code></pre>
-            <pre class="output"><code>2026-05-07T18:49:32.575448Z  INFO tracing_log_bridge: hex=ff  padded=  255  precision=3.14  binary=11111111</code></pre>
-          </div>
-        </article>
-    </section>
+        <pre class="output"><code>2026-05-07T19:19:06.302932Z  INFO tracing_log_bridge: hex=ff  padded=  255  precision=3.14  binary=11111111</code></pre>
+      </div>
+    </article>
   </div>
 
   <script>
-    function wireTabs(navSel) {
-      document.querySelectorAll(navSel).forEach(nav => {
-        const panels = nav.nextElementSibling;
-        if (!panels) return;
-        nav.addEventListener('click', e => {
-          const btn = e.target.closest('button[data-target]');
-          if (!btn) return;
-          const target = btn.dataset.target;
-          nav.querySelectorAll('button[data-target]').forEach(b =>
-            b.setAttribute('aria-selected', b === btn ? 'true' : 'false'));
-          panels.querySelectorAll(':scope > [data-name]').forEach(p => {
-            p.hidden = p.dataset.name !== target;
-          });
-        });
-      });
+    const panels = document.querySelector('.panels');
+    const subtabs = document.querySelector('nav.tabs.subtabs');
+
+    function activeLogger() {
+      const top = panels.dataset.activeTop;
+      const sub = panels.dataset.activeSub;
+      if (top === 'env_logger') return 'env_logger_default';
+      if (top === 'bridge') return 'tracing_log_bridge';
+      return 'tracing_' + sub;
     }
-    wireTabs('.tabs');
-    wireTabs('.subtabs');
+
+    function update() {
+      const logger = activeLogger();
+      panels.querySelectorAll('article.cell').forEach(c => {
+        c.hidden = c.dataset.logger !== logger;
+      });
+      subtabs.classList.toggle('inactive', panels.dataset.activeTop !== 'tracing-subscriber');
+    }
+
+    document.querySelectorAll('nav.tabs').forEach(nav => {
+      const axis = nav.dataset.axis;
+      nav.addEventListener('click', e => {
+        const btn = e.target.closest('button[data-' + axis + ']');
+        if (!btn) return;
+        const value = btn.dataset[axis];
+        nav.querySelectorAll('button').forEach(b =>
+          b.setAttribute('aria-selected', b === btn ? 'true' : 'false'));
+        if (axis === 'top') panels.dataset.activeTop = value;
+        else panels.dataset.activeSub = value;
+        update();
+      });
+    });
+
+    update();
   </script>
 </body>
 </html>
