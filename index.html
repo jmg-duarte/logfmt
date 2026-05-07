@@ -33,27 +33,27 @@
     <article class="cell" data-logger="env_logger_default" data-format="display" hidden>
       <h3 class="cell-label"><code>{}</code> &mdash; <code>Display</code></h3>
       <div class="pair">
-        <pre class="rust"><code>log::info!(&quot;hello {}, the answer is {}&quot;, &quot;world&quot;, 42);</code></pre>
-        <pre class="output"><code>[2026-05-07T19:19:05Z INFO  env_logger_default] hello world, the answer is 42</code></pre>
+        <pre class="rust"><code><span style="color:#323232;">log::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;hello {}, the answer is {}&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;world&quot;</span><span style="color:#323232;">, </span><span style="color:#0086b3;">42</span><span style="color:#323232;">);</span></code></pre>
+        <pre class="output"><code>[2026-05-07T19:26:46Z INFO  env_logger_default] hello world, the answer is 42</code></pre>
       </div>
     </article>
     <article class="cell" data-logger="env_logger_default" data-format="debug" hidden>
       <h3 class="cell-label"><code>{:?}</code> &mdash; <code>Debug</code></h3>
       <div class="pair">
-        <pre class="rust"><code>let users = vec![&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;];
-log::info!(&quot;users: {:?}&quot;, users);</code></pre>
-        <pre class="output"><code>[2026-05-07T19:19:05Z INFO  env_logger_default] users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]</code></pre>
+        <pre class="rust"><code><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> users </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">vec![</span><span style="color:#183691;">&quot;alice&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;bob&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;charlie&quot;</span><span style="color:#323232;">];
+</span><span style="color:#323232;">log::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;users: {:?}&quot;</span><span style="color:#323232;">, users);</span></code></pre>
+        <pre class="output"><code>[2026-05-07T19:26:46Z INFO  env_logger_default] users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]</code></pre>
       </div>
     </article>
     <article class="cell" data-logger="env_logger_default" data-format="pretty_debug" hidden>
       <h3 class="cell-label"><code>{:#?}</code> &mdash; pretty <code>Debug</code></h3>
       <div class="pair">
-        <pre class="rust"><code>#[derive(Debug)]
-struct User { name: &amp;'static str, age: u32, roles: Vec&lt;&amp;'static str&gt; }
-
-let user = User { name: &quot;alice&quot;, age: 30, roles: vec![&quot;admin&quot;, &quot;editor&quot;] };
-log::info!(&quot;user: {:#?}&quot;, user);</code></pre>
-        <pre class="output"><code>[2026-05-07T19:19:05Z INFO  env_logger_default] user: User {
+        <pre class="rust"><code><span style="color:#323232;">#[derive(Debug)]
+</span><span style="font-weight:bold;color:#a71d5d;">struct </span><span style="color:#323232;">User { name: </span><span style="font-weight:bold;color:#a71d5d;">&amp;&#39;static str</span><span style="color:#323232;">, age: </span><span style="font-weight:bold;color:#a71d5d;">u32</span><span style="color:#323232;">, roles: Vec&lt;</span><span style="font-weight:bold;color:#a71d5d;">&amp;&#39;static str</span><span style="color:#323232;">&gt; }
+</span><span style="color:#323232;">
+</span><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> user </span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#323232;"> User { name: </span><span style="color:#183691;">&quot;alice&quot;</span><span style="color:#323232;">, age: </span><span style="color:#0086b3;">30</span><span style="color:#323232;">, roles: vec![</span><span style="color:#183691;">&quot;admin&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;editor&quot;</span><span style="color:#323232;">] };
+</span><span style="color:#323232;">log::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;user: {:#?}&quot;</span><span style="color:#323232;">, user);</span></code></pre>
+        <pre class="output"><code>[2026-05-07T19:26:46Z INFO  env_logger_default] user: User {
         name: &quot;alice&quot;,
         age: 30,
         roles: [
@@ -66,44 +66,44 @@ log::info!(&quot;user: {:#?}&quot;, user);</code></pre>
     <article class="cell" data-logger="env_logger_default" data-format="named" hidden>
       <h3 class="cell-label"><code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)</h3>
       <div class="pair">
-        <pre class="rust"><code>let name = &quot;alice&quot;;
-let age = 30;
-log::info!(&quot;user {name} is {age} years old&quot;);</code></pre>
-        <pre class="output"><code>[2026-05-07T19:19:05Z INFO  env_logger_default] user alice is 30 years old</code></pre>
+        <pre class="rust"><code><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> name </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#183691;">&quot;alice&quot;</span><span style="color:#323232;">;
+</span><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> age </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">30</span><span style="color:#323232;">;
+</span><span style="color:#323232;">log::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;user {name} is {age} years old&quot;</span><span style="color:#323232;">);</span></code></pre>
+        <pre class="output"><code>[2026-05-07T19:26:46Z INFO  env_logger_default] user alice is 30 years old</code></pre>
       </div>
     </article>
     <article class="cell" data-logger="env_logger_default" data-format="other" hidden>
       <h3 class="cell-label"><code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary</h3>
       <div class="pair">
-        <pre class="rust"><code>let n = 255u32;
-log::info!(&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;, n, n, 3.14159, n);</code></pre>
-        <pre class="output"><code>[2026-05-07T19:19:05Z INFO  env_logger_default] hex=ff  padded=  255  precision=3.14  binary=11111111</code></pre>
+        <pre class="rust"><code><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> n </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">255</span><span style="font-weight:bold;color:#a71d5d;">u32</span><span style="color:#323232;">;
+</span><span style="color:#323232;">log::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;</span><span style="color:#323232;">, n, n, </span><span style="color:#0086b3;">3.14159</span><span style="color:#323232;">, n);</span></code></pre>
+        <pre class="output"><code>[2026-05-07T19:26:46Z INFO  env_logger_default] hex=ff  padded=  255  precision=3.14  binary=11111111</code></pre>
       </div>
     </article>
     <article class="cell" data-logger="tracing_full" data-format="display">
       <h3 class="cell-label"><code>{}</code> &mdash; <code>Display</code></h3>
       <div class="pair">
-        <pre class="rust"><code>tracing::info!(&quot;hello {}, the answer is {}&quot;, &quot;world&quot;, 42);</code></pre>
-        <pre class="output"><code>2026-05-07T19:19:05.737207Z  INFO tracing_full: hello world, the answer is 42</code></pre>
+        <pre class="rust"><code><span style="color:#323232;">tracing::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;hello {}, the answer is {}&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;world&quot;</span><span style="color:#323232;">, </span><span style="color:#0086b3;">42</span><span style="color:#323232;">);</span></code></pre>
+        <pre class="output"><code>2026-05-07T19:26:46.692414Z  INFO tracing_full: hello world, the answer is 42</code></pre>
       </div>
     </article>
     <article class="cell" data-logger="tracing_full" data-format="debug">
       <h3 class="cell-label"><code>{:?}</code> &mdash; <code>Debug</code></h3>
       <div class="pair">
-        <pre class="rust"><code>let users = vec![&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;];
-tracing::info!(&quot;users: {:?}&quot;, users);</code></pre>
-        <pre class="output"><code>2026-05-07T19:19:05.740052Z  INFO tracing_full: users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]</code></pre>
+        <pre class="rust"><code><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> users </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">vec![</span><span style="color:#183691;">&quot;alice&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;bob&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;charlie&quot;</span><span style="color:#323232;">];
+</span><span style="color:#323232;">tracing::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;users: {:?}&quot;</span><span style="color:#323232;">, users);</span></code></pre>
+        <pre class="output"><code>2026-05-07T19:26:46.697038Z  INFO tracing_full: users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]</code></pre>
       </div>
     </article>
     <article class="cell" data-logger="tracing_full" data-format="pretty_debug">
       <h3 class="cell-label"><code>{:#?}</code> &mdash; pretty <code>Debug</code></h3>
       <div class="pair">
-        <pre class="rust"><code>#[derive(Debug)]
-struct User { name: &amp;'static str, age: u32, roles: Vec&lt;&amp;'static str&gt; }
-
-let user = User { name: &quot;alice&quot;, age: 30, roles: vec![&quot;admin&quot;, &quot;editor&quot;] };
-tracing::info!(&quot;user: {:#?}&quot;, user);</code></pre>
-        <pre class="output"><code>2026-05-07T19:19:05.742636Z  INFO tracing_full: user: User {
+        <pre class="rust"><code><span style="color:#323232;">#[derive(Debug)]
+</span><span style="font-weight:bold;color:#a71d5d;">struct </span><span style="color:#323232;">User { name: </span><span style="font-weight:bold;color:#a71d5d;">&amp;&#39;static str</span><span style="color:#323232;">, age: </span><span style="font-weight:bold;color:#a71d5d;">u32</span><span style="color:#323232;">, roles: Vec&lt;</span><span style="font-weight:bold;color:#a71d5d;">&amp;&#39;static str</span><span style="color:#323232;">&gt; }
+</span><span style="color:#323232;">
+</span><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> user </span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#323232;"> User { name: </span><span style="color:#183691;">&quot;alice&quot;</span><span style="color:#323232;">, age: </span><span style="color:#0086b3;">30</span><span style="color:#323232;">, roles: vec![</span><span style="color:#183691;">&quot;admin&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;editor&quot;</span><span style="color:#323232;">] };
+</span><span style="color:#323232;">tracing::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;user: {:#?}&quot;</span><span style="color:#323232;">, user);</span></code></pre>
+        <pre class="output"><code>2026-05-07T19:26:46.699372Z  INFO tracing_full: user: User {
     name: &quot;alice&quot;,
     age: 30,
     roles: [
@@ -116,44 +116,44 @@ tracing::info!(&quot;user: {:#?}&quot;, user);</code></pre>
     <article class="cell" data-logger="tracing_full" data-format="named">
       <h3 class="cell-label"><code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)</h3>
       <div class="pair">
-        <pre class="rust"><code>let name = &quot;alice&quot;;
-let age = 30;
-tracing::info!(&quot;user {name} is {age} years old&quot;);</code></pre>
-        <pre class="output"><code>2026-05-07T19:19:05.744549Z  INFO tracing_full: user alice is 30 years old</code></pre>
+        <pre class="rust"><code><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> name </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#183691;">&quot;alice&quot;</span><span style="color:#323232;">;
+</span><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> age </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">30</span><span style="color:#323232;">;
+</span><span style="color:#323232;">tracing::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;user {name} is {age} years old&quot;</span><span style="color:#323232;">);</span></code></pre>
+        <pre class="output"><code>2026-05-07T19:26:46.703287Z  INFO tracing_full: user alice is 30 years old</code></pre>
       </div>
     </article>
     <article class="cell" data-logger="tracing_full" data-format="other">
       <h3 class="cell-label"><code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary</h3>
       <div class="pair">
-        <pre class="rust"><code>let n = 255u32;
-tracing::info!(&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;, n, n, 3.14159, n);</code></pre>
-        <pre class="output"><code>2026-05-07T19:19:05.746831Z  INFO tracing_full: hex=ff  padded=  255  precision=3.14  binary=11111111</code></pre>
+        <pre class="rust"><code><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> n </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">255</span><span style="font-weight:bold;color:#a71d5d;">u32</span><span style="color:#323232;">;
+</span><span style="color:#323232;">tracing::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;</span><span style="color:#323232;">, n, n, </span><span style="color:#0086b3;">3.14159</span><span style="color:#323232;">, n);</span></code></pre>
+        <pre class="output"><code>2026-05-07T19:26:46.705478Z  INFO tracing_full: hex=ff  padded=  255  precision=3.14  binary=11111111</code></pre>
       </div>
     </article>
     <article class="cell" data-logger="tracing_compact" data-format="display" hidden>
       <h3 class="cell-label"><code>{}</code> &mdash; <code>Display</code></h3>
       <div class="pair">
-        <pre class="rust"><code>tracing::info!(&quot;hello {}, the answer is {}&quot;, &quot;world&quot;, 42);</code></pre>
-        <pre class="output"><code>2026-05-07T19:19:05.868376Z  INFO tracing_compact: hello world, the answer is 42</code></pre>
+        <pre class="rust"><code><span style="color:#323232;">tracing::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;hello {}, the answer is {}&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;world&quot;</span><span style="color:#323232;">, </span><span style="color:#0086b3;">42</span><span style="color:#323232;">);</span></code></pre>
+        <pre class="output"><code>2026-05-07T19:26:46.829878Z  INFO tracing_compact: hello world, the answer is 42</code></pre>
       </div>
     </article>
     <article class="cell" data-logger="tracing_compact" data-format="debug" hidden>
       <h3 class="cell-label"><code>{:?}</code> &mdash; <code>Debug</code></h3>
       <div class="pair">
-        <pre class="rust"><code>let users = vec![&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;];
-tracing::info!(&quot;users: {:?}&quot;, users);</code></pre>
-        <pre class="output"><code>2026-05-07T19:19:05.872136Z  INFO tracing_compact: users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]</code></pre>
+        <pre class="rust"><code><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> users </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">vec![</span><span style="color:#183691;">&quot;alice&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;bob&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;charlie&quot;</span><span style="color:#323232;">];
+</span><span style="color:#323232;">tracing::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;users: {:?}&quot;</span><span style="color:#323232;">, users);</span></code></pre>
+        <pre class="output"><code>2026-05-07T19:26:46.835733Z  INFO tracing_compact: users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]</code></pre>
       </div>
     </article>
     <article class="cell" data-logger="tracing_compact" data-format="pretty_debug" hidden>
       <h3 class="cell-label"><code>{:#?}</code> &mdash; pretty <code>Debug</code></h3>
       <div class="pair">
-        <pre class="rust"><code>#[derive(Debug)]
-struct User { name: &amp;'static str, age: u32, roles: Vec&lt;&amp;'static str&gt; }
-
-let user = User { name: &quot;alice&quot;, age: 30, roles: vec![&quot;admin&quot;, &quot;editor&quot;] };
-tracing::info!(&quot;user: {:#?}&quot;, user);</code></pre>
-        <pre class="output"><code>2026-05-07T19:19:05.874858Z  INFO tracing_compact: user: User {
+        <pre class="rust"><code><span style="color:#323232;">#[derive(Debug)]
+</span><span style="font-weight:bold;color:#a71d5d;">struct </span><span style="color:#323232;">User { name: </span><span style="font-weight:bold;color:#a71d5d;">&amp;&#39;static str</span><span style="color:#323232;">, age: </span><span style="font-weight:bold;color:#a71d5d;">u32</span><span style="color:#323232;">, roles: Vec&lt;</span><span style="font-weight:bold;color:#a71d5d;">&amp;&#39;static str</span><span style="color:#323232;">&gt; }
+</span><span style="color:#323232;">
+</span><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> user </span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#323232;"> User { name: </span><span style="color:#183691;">&quot;alice&quot;</span><span style="color:#323232;">, age: </span><span style="color:#0086b3;">30</span><span style="color:#323232;">, roles: vec![</span><span style="color:#183691;">&quot;admin&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;editor&quot;</span><span style="color:#323232;">] };
+</span><span style="color:#323232;">tracing::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;user: {:#?}&quot;</span><span style="color:#323232;">, user);</span></code></pre>
+        <pre class="output"><code>2026-05-07T19:26:46.839613Z  INFO tracing_compact: user: User {
     name: &quot;alice&quot;,
     age: 30,
     roles: [
@@ -166,46 +166,46 @@ tracing::info!(&quot;user: {:#?}&quot;, user);</code></pre>
     <article class="cell" data-logger="tracing_compact" data-format="named" hidden>
       <h3 class="cell-label"><code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)</h3>
       <div class="pair">
-        <pre class="rust"><code>let name = &quot;alice&quot;;
-let age = 30;
-tracing::info!(&quot;user {name} is {age} years old&quot;);</code></pre>
-        <pre class="output"><code>2026-05-07T19:19:05.877313Z  INFO tracing_compact: user alice is 30 years old</code></pre>
+        <pre class="rust"><code><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> name </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#183691;">&quot;alice&quot;</span><span style="color:#323232;">;
+</span><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> age </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">30</span><span style="color:#323232;">;
+</span><span style="color:#323232;">tracing::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;user {name} is {age} years old&quot;</span><span style="color:#323232;">);</span></code></pre>
+        <pre class="output"><code>2026-05-07T19:26:46.844917Z  INFO tracing_compact: user alice is 30 years old</code></pre>
       </div>
     </article>
     <article class="cell" data-logger="tracing_compact" data-format="other" hidden>
       <h3 class="cell-label"><code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary</h3>
       <div class="pair">
-        <pre class="rust"><code>let n = 255u32;
-tracing::info!(&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;, n, n, 3.14159, n);</code></pre>
-        <pre class="output"><code>2026-05-07T19:19:05.879663Z  INFO tracing_compact: hex=ff  padded=  255  precision=3.14  binary=11111111</code></pre>
+        <pre class="rust"><code><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> n </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">255</span><span style="font-weight:bold;color:#a71d5d;">u32</span><span style="color:#323232;">;
+</span><span style="color:#323232;">tracing::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;</span><span style="color:#323232;">, n, n, </span><span style="color:#0086b3;">3.14159</span><span style="color:#323232;">, n);</span></code></pre>
+        <pre class="output"><code>2026-05-07T19:26:46.848000Z  INFO tracing_compact: hex=ff  padded=  255  precision=3.14  binary=11111111</code></pre>
       </div>
     </article>
     <article class="cell" data-logger="tracing_pretty" data-format="display" hidden>
       <h3 class="cell-label"><code>{}</code> &mdash; <code>Display</code></h3>
       <div class="pair">
-        <pre class="rust"><code>tracing::info!(&quot;hello {}, the answer is {}&quot;, &quot;world&quot;, 42);</code></pre>
-        <pre class="output"><code>  2026-05-07T19:19:06.002411Z  INFO tracing_pretty: hello world, the answer is 42
+        <pre class="rust"><code><span style="color:#323232;">tracing::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;hello {}, the answer is {}&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;world&quot;</span><span style="color:#323232;">, </span><span style="color:#0086b3;">42</span><span style="color:#323232;">);</span></code></pre>
+        <pre class="output"><code>  2026-05-07T19:26:46.969331Z  INFO tracing_pretty: hello world, the answer is 42
     at src/bin/tracing_pretty.rs:14</code></pre>
       </div>
     </article>
     <article class="cell" data-logger="tracing_pretty" data-format="debug" hidden>
       <h3 class="cell-label"><code>{:?}</code> &mdash; <code>Debug</code></h3>
       <div class="pair">
-        <pre class="rust"><code>let users = vec![&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;];
-tracing::info!(&quot;users: {:?}&quot;, users);</code></pre>
-        <pre class="output"><code>  2026-05-07T19:19:06.004598Z  INFO tracing_pretty: users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]
+        <pre class="rust"><code><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> users </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">vec![</span><span style="color:#183691;">&quot;alice&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;bob&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;charlie&quot;</span><span style="color:#323232;">];
+</span><span style="color:#323232;">tracing::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;users: {:?}&quot;</span><span style="color:#323232;">, users);</span></code></pre>
+        <pre class="output"><code>  2026-05-07T19:26:46.971796Z  INFO tracing_pretty: users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]
     at src/bin/tracing_pretty.rs:18</code></pre>
       </div>
     </article>
     <article class="cell" data-logger="tracing_pretty" data-format="pretty_debug" hidden>
       <h3 class="cell-label"><code>{:#?}</code> &mdash; pretty <code>Debug</code></h3>
       <div class="pair">
-        <pre class="rust"><code>#[derive(Debug)]
-struct User { name: &amp;'static str, age: u32, roles: Vec&lt;&amp;'static str&gt; }
-
-let user = User { name: &quot;alice&quot;, age: 30, roles: vec![&quot;admin&quot;, &quot;editor&quot;] };
-tracing::info!(&quot;user: {:#?}&quot;, user);</code></pre>
-        <pre class="output"><code>  2026-05-07T19:19:06.006570Z  INFO tracing_pretty: user: User {
+        <pre class="rust"><code><span style="color:#323232;">#[derive(Debug)]
+</span><span style="font-weight:bold;color:#a71d5d;">struct </span><span style="color:#323232;">User { name: </span><span style="font-weight:bold;color:#a71d5d;">&amp;&#39;static str</span><span style="color:#323232;">, age: </span><span style="font-weight:bold;color:#a71d5d;">u32</span><span style="color:#323232;">, roles: Vec&lt;</span><span style="font-weight:bold;color:#a71d5d;">&amp;&#39;static str</span><span style="color:#323232;">&gt; }
+</span><span style="color:#323232;">
+</span><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> user </span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#323232;"> User { name: </span><span style="color:#183691;">&quot;alice&quot;</span><span style="color:#323232;">, age: </span><span style="color:#0086b3;">30</span><span style="color:#323232;">, roles: vec![</span><span style="color:#183691;">&quot;admin&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;editor&quot;</span><span style="color:#323232;">] };
+</span><span style="color:#323232;">tracing::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;user: {:#?}&quot;</span><span style="color:#323232;">, user);</span></code></pre>
+        <pre class="output"><code>  2026-05-07T19:26:46.974170Z  INFO tracing_pretty: user: User {
     name: &quot;alice&quot;,
     age: 30,
     roles: [
@@ -219,89 +219,89 @@ tracing::info!(&quot;user: {:#?}&quot;, user);</code></pre>
     <article class="cell" data-logger="tracing_pretty" data-format="named" hidden>
       <h3 class="cell-label"><code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)</h3>
       <div class="pair">
-        <pre class="rust"><code>let name = &quot;alice&quot;;
-let age = 30;
-tracing::info!(&quot;user {name} is {age} years old&quot;);</code></pre>
-        <pre class="output"><code>  2026-05-07T19:19:06.008318Z  INFO tracing_pretty: user alice is 30 years old
+        <pre class="rust"><code><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> name </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#183691;">&quot;alice&quot;</span><span style="color:#323232;">;
+</span><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> age </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">30</span><span style="color:#323232;">;
+</span><span style="color:#323232;">tracing::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;user {name} is {age} years old&quot;</span><span style="color:#323232;">);</span></code></pre>
+        <pre class="output"><code>  2026-05-07T19:26:46.977692Z  INFO tracing_pretty: user alice is 30 years old
     at src/bin/tracing_pretty.rs:27</code></pre>
       </div>
     </article>
     <article class="cell" data-logger="tracing_pretty" data-format="other" hidden>
       <h3 class="cell-label"><code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary</h3>
       <div class="pair">
-        <pre class="rust"><code>let n = 255u32;
-tracing::info!(&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;, n, n, 3.14159, n);</code></pre>
-        <pre class="output"><code>  2026-05-07T19:19:06.010478Z  INFO tracing_pretty: hex=ff  padded=  255  precision=3.14  binary=11111111
+        <pre class="rust"><code><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> n </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">255</span><span style="font-weight:bold;color:#a71d5d;">u32</span><span style="color:#323232;">;
+</span><span style="color:#323232;">tracing::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;</span><span style="color:#323232;">, n, n, </span><span style="color:#0086b3;">3.14159</span><span style="color:#323232;">, n);</span></code></pre>
+        <pre class="output"><code>  2026-05-07T19:26:46.979855Z  INFO tracing_pretty: hex=ff  padded=  255  precision=3.14  binary=11111111
     at src/bin/tracing_pretty.rs:31</code></pre>
       </div>
     </article>
     <article class="cell" data-logger="tracing_json" data-format="display" hidden>
       <h3 class="cell-label"><code>{}</code> &mdash; <code>Display</code></h3>
       <div class="pair">
-        <pre class="rust"><code>tracing::info!(&quot;hello {}, the answer is {}&quot;, &quot;world&quot;, 42);</code></pre>
-        <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T19:19:06.142364Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;hello world, the answer is 42&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
+        <pre class="rust"><code><span style="color:#323232;">tracing::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;hello {}, the answer is {}&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;world&quot;</span><span style="color:#323232;">, </span><span style="color:#0086b3;">42</span><span style="color:#323232;">);</span></code></pre>
+        <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T19:26:47.101000Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;hello world, the answer is 42&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
       </div>
     </article>
     <article class="cell" data-logger="tracing_json" data-format="debug" hidden>
       <h3 class="cell-label"><code>{:?}</code> &mdash; <code>Debug</code></h3>
       <div class="pair">
-        <pre class="rust"><code>let users = vec![&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;];
-tracing::info!(&quot;users: {:?}&quot;, users);</code></pre>
-        <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T19:19:06.144906Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;users: [\&quot;alice\&quot;, \&quot;bob\&quot;, \&quot;charlie\&quot;]&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
+        <pre class="rust"><code><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> users </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">vec![</span><span style="color:#183691;">&quot;alice&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;bob&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;charlie&quot;</span><span style="color:#323232;">];
+</span><span style="color:#323232;">tracing::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;users: {:?}&quot;</span><span style="color:#323232;">, users);</span></code></pre>
+        <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T19:26:47.105125Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;users: [\&quot;alice\&quot;, \&quot;bob\&quot;, \&quot;charlie\&quot;]&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
       </div>
     </article>
     <article class="cell" data-logger="tracing_json" data-format="pretty_debug" hidden>
       <h3 class="cell-label"><code>{:#?}</code> &mdash; pretty <code>Debug</code></h3>
       <div class="pair">
-        <pre class="rust"><code>#[derive(Debug)]
-struct User { name: &amp;'static str, age: u32, roles: Vec&lt;&amp;'static str&gt; }
-
-let user = User { name: &quot;alice&quot;, age: 30, roles: vec![&quot;admin&quot;, &quot;editor&quot;] };
-tracing::info!(&quot;user: {:#?}&quot;, user);</code></pre>
-        <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T19:19:06.147175Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;user: User {\n    name: \&quot;alice\&quot;,\n    age: 30,\n    roles: [\n        \&quot;admin\&quot;,\n        \&quot;editor\&quot;,\n    ],\n}&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
+        <pre class="rust"><code><span style="color:#323232;">#[derive(Debug)]
+</span><span style="font-weight:bold;color:#a71d5d;">struct </span><span style="color:#323232;">User { name: </span><span style="font-weight:bold;color:#a71d5d;">&amp;&#39;static str</span><span style="color:#323232;">, age: </span><span style="font-weight:bold;color:#a71d5d;">u32</span><span style="color:#323232;">, roles: Vec&lt;</span><span style="font-weight:bold;color:#a71d5d;">&amp;&#39;static str</span><span style="color:#323232;">&gt; }
+</span><span style="color:#323232;">
+</span><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> user </span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#323232;"> User { name: </span><span style="color:#183691;">&quot;alice&quot;</span><span style="color:#323232;">, age: </span><span style="color:#0086b3;">30</span><span style="color:#323232;">, roles: vec![</span><span style="color:#183691;">&quot;admin&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;editor&quot;</span><span style="color:#323232;">] };
+</span><span style="color:#323232;">tracing::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;user: {:#?}&quot;</span><span style="color:#323232;">, user);</span></code></pre>
+        <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T19:26:47.108723Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;user: User {\n    name: \&quot;alice\&quot;,\n    age: 30,\n    roles: [\n        \&quot;admin\&quot;,\n        \&quot;editor\&quot;,\n    ],\n}&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
       </div>
     </article>
     <article class="cell" data-logger="tracing_json" data-format="named" hidden>
       <h3 class="cell-label"><code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)</h3>
       <div class="pair">
-        <pre class="rust"><code>let name = &quot;alice&quot;;
-let age = 30;
-tracing::info!(&quot;user {name} is {age} years old&quot;);</code></pre>
-        <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T19:19:06.149217Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;user alice is 30 years old&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
+        <pre class="rust"><code><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> name </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#183691;">&quot;alice&quot;</span><span style="color:#323232;">;
+</span><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> age </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">30</span><span style="color:#323232;">;
+</span><span style="color:#323232;">tracing::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;user {name} is {age} years old&quot;</span><span style="color:#323232;">);</span></code></pre>
+        <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T19:26:47.113422Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;user alice is 30 years old&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
       </div>
     </article>
     <article class="cell" data-logger="tracing_json" data-format="other" hidden>
       <h3 class="cell-label"><code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary</h3>
       <div class="pair">
-        <pre class="rust"><code>let n = 255u32;
-tracing::info!(&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;, n, n, 3.14159, n);</code></pre>
-        <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T19:19:06.151209Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;hex=ff  padded=  255  precision=3.14  binary=11111111&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
+        <pre class="rust"><code><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> n </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">255</span><span style="font-weight:bold;color:#a71d5d;">u32</span><span style="color:#323232;">;
+</span><span style="color:#323232;">tracing::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;</span><span style="color:#323232;">, n, n, </span><span style="color:#0086b3;">3.14159</span><span style="color:#323232;">, n);</span></code></pre>
+        <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T19:26:47.116414Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;hex=ff  padded=  255  precision=3.14  binary=11111111&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
       </div>
     </article>
     <article class="cell" data-logger="tracing_log_bridge" data-format="display" hidden>
       <h3 class="cell-label"><code>{}</code> &mdash; <code>Display</code></h3>
       <div class="pair">
-        <pre class="rust"><code>log::info!(&quot;hello {}, the answer is {}&quot;, &quot;world&quot;, 42);</code></pre>
-        <pre class="output"><code>2026-05-07T19:19:06.291384Z  INFO tracing_log_bridge: hello world, the answer is 42</code></pre>
+        <pre class="rust"><code><span style="color:#323232;">log::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;hello {}, the answer is {}&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;world&quot;</span><span style="color:#323232;">, </span><span style="color:#0086b3;">42</span><span style="color:#323232;">);</span></code></pre>
+        <pre class="output"><code>2026-05-07T19:26:47.241913Z  INFO tracing_log_bridge: hello world, the answer is 42</code></pre>
       </div>
     </article>
     <article class="cell" data-logger="tracing_log_bridge" data-format="debug" hidden>
       <h3 class="cell-label"><code>{:?}</code> &mdash; <code>Debug</code></h3>
       <div class="pair">
-        <pre class="rust"><code>let users = vec![&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;];
-log::info!(&quot;users: {:?}&quot;, users);</code></pre>
-        <pre class="output"><code>2026-05-07T19:19:06.296158Z  INFO tracing_log_bridge: users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]</code></pre>
+        <pre class="rust"><code><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> users </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#323232;">vec![</span><span style="color:#183691;">&quot;alice&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;bob&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;charlie&quot;</span><span style="color:#323232;">];
+</span><span style="color:#323232;">log::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;users: {:?}&quot;</span><span style="color:#323232;">, users);</span></code></pre>
+        <pre class="output"><code>2026-05-07T19:26:47.245868Z  INFO tracing_log_bridge: users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]</code></pre>
       </div>
     </article>
     <article class="cell" data-logger="tracing_log_bridge" data-format="pretty_debug" hidden>
       <h3 class="cell-label"><code>{:#?}</code> &mdash; pretty <code>Debug</code></h3>
       <div class="pair">
-        <pre class="rust"><code>#[derive(Debug)]
-struct User { name: &amp;'static str, age: u32, roles: Vec&lt;&amp;'static str&gt; }
-
-let user = User { name: &quot;alice&quot;, age: 30, roles: vec![&quot;admin&quot;, &quot;editor&quot;] };
-log::info!(&quot;user: {:#?}&quot;, user);</code></pre>
-        <pre class="output"><code>2026-05-07T19:19:06.299088Z  INFO tracing_log_bridge: user: User {
+        <pre class="rust"><code><span style="color:#323232;">#[derive(Debug)]
+</span><span style="font-weight:bold;color:#a71d5d;">struct </span><span style="color:#323232;">User { name: </span><span style="font-weight:bold;color:#a71d5d;">&amp;&#39;static str</span><span style="color:#323232;">, age: </span><span style="font-weight:bold;color:#a71d5d;">u32</span><span style="color:#323232;">, roles: Vec&lt;</span><span style="font-weight:bold;color:#a71d5d;">&amp;&#39;static str</span><span style="color:#323232;">&gt; }
+</span><span style="color:#323232;">
+</span><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> user </span><span style="font-weight:bold;color:#a71d5d;">=</span><span style="color:#323232;"> User { name: </span><span style="color:#183691;">&quot;alice&quot;</span><span style="color:#323232;">, age: </span><span style="color:#0086b3;">30</span><span style="color:#323232;">, roles: vec![</span><span style="color:#183691;">&quot;admin&quot;</span><span style="color:#323232;">, </span><span style="color:#183691;">&quot;editor&quot;</span><span style="color:#323232;">] };
+</span><span style="color:#323232;">log::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;user: {:#?}&quot;</span><span style="color:#323232;">, user);</span></code></pre>
+        <pre class="output"><code>2026-05-07T19:26:47.248318Z  INFO tracing_log_bridge: user: User {
     name: &quot;alice&quot;,
     age: 30,
     roles: [
@@ -314,18 +314,18 @@ log::info!(&quot;user: {:#?}&quot;, user);</code></pre>
     <article class="cell" data-logger="tracing_log_bridge" data-format="named" hidden>
       <h3 class="cell-label"><code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)</h3>
       <div class="pair">
-        <pre class="rust"><code>let name = &quot;alice&quot;;
-let age = 30;
-log::info!(&quot;user {name} is {age} years old&quot;);</code></pre>
-        <pre class="output"><code>2026-05-07T19:19:06.300999Z  INFO tracing_log_bridge: user alice is 30 years old</code></pre>
+        <pre class="rust"><code><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> name </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#183691;">&quot;alice&quot;</span><span style="color:#323232;">;
+</span><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> age </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">30</span><span style="color:#323232;">;
+</span><span style="color:#323232;">log::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;user {name} is {age} years old&quot;</span><span style="color:#323232;">);</span></code></pre>
+        <pre class="output"><code>2026-05-07T19:26:47.251579Z  INFO tracing_log_bridge: user alice is 30 years old</code></pre>
       </div>
     </article>
     <article class="cell" data-logger="tracing_log_bridge" data-format="other" hidden>
       <h3 class="cell-label"><code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary</h3>
       <div class="pair">
-        <pre class="rust"><code>let n = 255u32;
-log::info!(&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;, n, n, 3.14159, n);</code></pre>
-        <pre class="output"><code>2026-05-07T19:19:06.302932Z  INFO tracing_log_bridge: hex=ff  padded=  255  precision=3.14  binary=11111111</code></pre>
+        <pre class="rust"><code><span style="font-weight:bold;color:#a71d5d;">let</span><span style="color:#323232;"> n </span><span style="font-weight:bold;color:#a71d5d;">= </span><span style="color:#0086b3;">255</span><span style="font-weight:bold;color:#a71d5d;">u32</span><span style="color:#323232;">;
+</span><span style="color:#323232;">log::info</span><span style="font-weight:bold;color:#a71d5d;">!</span><span style="color:#323232;">(</span><span style="color:#183691;">&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;</span><span style="color:#323232;">, n, n, </span><span style="color:#0086b3;">3.14159</span><span style="color:#323232;">, n);</span></code></pre>
+        <pre class="output"><code>2026-05-07T19:26:47.253679Z  INFO tracing_log_bridge: hex=ff  padded=  255  precision=3.14  binary=11111111</code></pre>
       </div>
     </article>
   </div>

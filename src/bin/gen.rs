@@ -2,6 +2,12 @@ use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
 
+use syntect::easy::HighlightLines;
+use syntect::highlighting::{Theme, ThemeSet};
+use syntect::html::{styled_line_to_highlighted_html, IncludeBackground};
+use syntect::parsing::{SyntaxReference, SyntaxSet};
+use syntect::util::LinesWithEndings;
+
 struct Logger {
     bin: &'static str,
     macro_path: &'static str,
@@ -64,6 +70,19 @@ fn html_escape(s: &str) -> String {
     out
 }
 
+fn highlight_rust(snippet: &str, ss: &SyntaxSet, syntax: &SyntaxReference, theme: &Theme) -> String {
+    let mut h = HighlightLines::new(syntax, theme);
+    let mut out = String::new();
+    for line in LinesWithEndings::from(snippet) {
+        let ranges = h.highlight_line(line, ss).expect("syntect highlight_line");
+        out.push_str(
+            &styled_line_to_highlighted_html(&ranges, IncludeBackground::No)
+                .expect("syntect html"),
+        );
+    }
+    out
+}
+
 fn strip_ansi(input: &str) -> String {
     let bytes = input.as_bytes();
     let mut out = Vec::with_capacity(bytes.len());
@@ -100,6 +119,19 @@ fn main() {
     assert!(status.success(), "cargo build failed");
 
     let bin_dir = root.join("target/debug");
+
+    let syntax_set = SyntaxSet::load_defaults_newlines();
+    let theme_set = ThemeSet::load_defaults();
+    let syntax = syntax_set
+        .find_syntax_by_extension("rs")
+        .expect("rust syntax")
+        .clone();
+    let theme = theme_set
+        .themes
+        .get("InspiredGitHub")
+        .expect("InspiredGitHub theme")
+        .clone();
+
     let mut cells = String::new();
 
     for (li, logger) in LOGGERS.iter().enumerate() {
@@ -136,7 +168,7 @@ fn main() {
             cells.push_str("      <div class=\"pair\">\n");
             cells.push_str(&format!(
                 "        <pre class=\"rust\"><code>{}</code></pre>\n",
-                html_escape(&snippet)
+                highlight_rust(&snippet, &syntax_set, &syntax, &theme)
             ));
             cells.push_str(&format!(
                 "        <pre class=\"output\"><code>{}</code></pre>\n",
