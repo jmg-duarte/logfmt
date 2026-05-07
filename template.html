@@ -2,19 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Rust log formatters</title>
+  <title>logfmt &mdash; Rust log output, rendered</title>
+  <meta name="description" content="Side-by-side reference for Rust log macros across env_logger, tracing-subscriber (Full / Compact / Pretty / Json), and the tracing-log bridge, for every common format spec.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100..700&family=Recursive:MONO,wght@1,300..700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/commit-mono@latest/400.css">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="syntax.css">
+  <script>
+    (function () {
+      var pref = localStorage.getItem('theme');
+      var dark = pref === 'dark' ||
+                 (pref !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+      if (dark) document.documentElement.classList.add('dark');
+    })();
+  </script>
 </head>
 <body>
   <header>
-    <h1>Rust log formatters</h1>
-    <p>Pick a logger; the panel below shows five format-string variants &mdash; <code>{}</code>, <code>{:?}</code>, <code>{:#?}</code>, <code>{name}</code>, and other specs &mdash; with call site and captured output.</p>
+    <h1>logfmt</h1>
+    <button class="theme-toggle" type="button" aria-label="Toggle theme">Dark</button>
   </header>
-
-  <aside class="finding">
-    <h2>Do <code>log</code> and <code>tracing</code> share the same format?</h2>
-    <p><strong>No.</strong> Compare <code>env_logger</code> with any of the <code>tracing-subscriber</code> variants at a fixed format spec to see the difference. The <code>tracing-log</code> <strong>bridge</strong> tab shows what <code>log::info!</code> looks like when routed through <code>tracing-subscriber</code>.</p>
-  </aside>
 
   <nav class="tabs" role="tablist" aria-label="Logger" data-axis="top">
     <button class="tab" type="button" data-top="tracing-subscriber" aria-selected="true"><code>tracing-subscriber</code></button>
@@ -32,6 +42,8 @@
   <div class="panels" data-active-top="tracing-subscriber" data-active-sub="full">
 {{cells}}
   </div>
+
+{{owner_footer}}
 
   <script>
     const panels = document.querySelector('.panels');
@@ -68,6 +80,28 @@
     });
 
     update();
+
+    const themeBtn = document.querySelector('.theme-toggle');
+    const root = document.documentElement;
+    function effectiveTheme() {
+      return root.classList.contains('dark') ? 'dark' : 'light';
+    }
+    function refreshThemeBtn() {
+      themeBtn.textContent = effectiveTheme() === 'dark' ? 'Light' : 'Dark';
+    }
+    themeBtn.addEventListener('click', () => {
+      const next = effectiveTheme() === 'dark' ? 'light' : 'dark';
+      root.classList.toggle('dark', next === 'dark');
+      localStorage.setItem('theme', next);
+      refreshThemeBtn();
+    });
+    matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+      if (!localStorage.getItem('theme')) {
+        root.classList.toggle('dark', e.matches);
+        refreshThemeBtn();
+      }
+    });
+    refreshThemeBtn();
   </script>
 </body>
 </html>

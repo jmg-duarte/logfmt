@@ -9,10 +9,25 @@
   --rule: #d8d4cc;
 }
 
+/* Dark vars. The .dark class is set by the inline <head> script
+   based on localStorage and OS preference; the same selector is used
+   by syntax.css to flip code-block colors. */
+:root.dark {
+  --bg: #15181d;
+  --fg: #e8e8ea;
+  --muted: #9a9aa3;
+  --rust-bg: #2b303b;
+  --output-bg: #0d0f13;
+  --output-fg: #d8d8db;
+  --accent: #ff9c5a;
+  --rule: #2a2f37;
+}
+
 * { box-sizing: border-box; }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-weight: 350;
   background: var(--bg);
   color: var(--fg);
   line-height: 1.5;
@@ -21,27 +36,44 @@ body {
   max-width: 1100px;
 }
 
-header h1 { margin-bottom: 0.25rem; }
-header p {
-  color: var(--muted);
-  margin-top: 0;
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+header h1 {
+  margin: 0;
+  font-family: "Commit Mono", "Recursive", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-variation-settings: "MONO" 1;
+  font-weight: 400;
+}
+
+button.theme-toggle {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 0.4rem 0.85rem;
+  color: var(--fg);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+button.theme-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 a { color: var(--accent); }
 
-aside.finding {
-  border-left: 3px solid var(--accent);
-  background: #fff;
-  padding: 0.75rem 1rem;
-  margin: 1.5rem 0 2rem;
-}
-aside.finding h2 {
-  margin-top: 0;
-  font-size: 1.05rem;
-}
-
 code, pre {
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: "Commit Mono", "Recursive", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-variation-settings: "MONO" 1;
   font-size: 0.875rem;
 }
 
@@ -106,7 +138,7 @@ article.cell:last-child { margin-bottom: 0; }
 
 .cell-label {
   font-size: 0.95rem;
-  font-weight: 500;
+  font-weight: 400;
   margin: 0 0 0.5rem;
   color: var(--fg);
 }
@@ -140,3 +172,22 @@ pre.output {
 }
 
 [hidden] { display: none !important; }
+
+.site-footer {
+  margin-top: 3rem;
+  font-size: 0.875rem;
+  font-weight: 200;
+  color: var(--muted);
+  opacity: 0.3;
+  text-align: center;
+}
+
+.site-footer a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.site-footer a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
