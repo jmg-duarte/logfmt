@@ -8,81 +8,113 @@
 <body>
   <header>
     <h1>Rust log formatters</h1>
-    <p>For each formatter: the call site on the left, the rendered output on the right. Outputs are captured from real binaries by <code>src/bin/gen.rs</code>; see <a href="https://github.com/jmg-duarte/logfmt">the source</a>.</p>
+    <p>For each formatter: the call site on the left, the rendered output on the right. Pick a tab to swap in another formatter.</p>
   </header>
 
   <aside class="finding">
     <h2>Do <code>log</code> and <code>tracing</code> share the same format?</h2>
-    <p><strong>No.</strong> Their default formatters produce visibly different strings for the same call &mdash; compare the <a href="#env_logger_default"><code>env_logger</code> default</a> with <a href="#tracing_full"><code>tracing-subscriber</code>'s default</a>. The <a href="#tracing_log_bridge">bridge example</a> shows what happens when <code>log::info!</code> is routed through <code>tracing-subscriber</code> via <code>LogTracer</code>: the output uses tracing's format, not <code>env_logger</code>'s.</p>
+    <p><strong>No.</strong> Switch between the <code>env_logger</code> and <code>tracing-subscriber</code> tabs to see the difference in defaults. The <strong>tracing-log bridge</strong> tab shows what <code>log::info!</code> looks like when routed through <code>tracing-subscriber</code>.</p>
   </aside>
 
-  <section id="env_logger_default">
-    <h2><code>env_logger</code> &mdash; default</h2>
-    <div class="pair">
-      <pre class="rust"><code>fn main() {
+  <nav class="tabs" role="tablist" aria-label="Logger">
+    <button class="tab" type="button" data-target="env_logger" aria-selected="true"><code>env_logger</code></button>
+    <button class="tab" type="button" data-target="tracing-subscriber" aria-selected="false"><code>tracing-subscriber</code></button>
+    <button class="tab" type="button" data-target="bridge" aria-selected="false"><code>tracing-log</code> bridge</button>
+  </nav>
+
+  <div class="panels">
+    <section class="panel" data-name="env_logger">
+      <p class="caption">Default formatter, called as <code>env_logger::init()</code>.</p>
+      <div class="pair">
+        <pre class="rust"><code>fn main() {
     env_logger::init();
     log::info!(&quot;the answer was: {}&quot;, 12);
 }</code></pre>
-      <pre class="output"><code>[2026-05-07T18:20:49Z INFO  env_logger_default] the answer was: 12</code></pre>
-    </div>
-  </section>
+        <pre class="output"><code>[2026-05-07T18:25:59Z INFO  env_logger_default] the answer was: 12</code></pre>
+      </div>
+    </section>
 
-  <section id="tracing_full">
-    <h2><code>tracing-subscriber</code> &mdash; <code>Full</code> (default)</h2>
-    <div class="pair">
-      <pre class="rust"><code>fn main() {
+    <section class="panel" data-name="tracing-subscriber" hidden>
+      <nav class="subtabs" role="tablist" aria-label="tracing-subscriber formatter">
+        <button class="subtab" type="button" data-target="full" aria-selected="true">Full <span class="hint">(default)</span></button>
+        <button class="subtab" type="button" data-target="compact" aria-selected="false">Compact</button>
+        <button class="subtab" type="button" data-target="pretty" aria-selected="false">Pretty</button>
+        <button class="subtab" type="button" data-target="json" aria-selected="false">Json</button>
+      </nav>
+      <div class="subpanels">
+        <div class="subpanel" data-name="full">
+          <div class="pair">
+            <pre class="rust"><code>fn main() {
     tracing_subscriber::fmt().init();
     tracing::info!(&quot;the answer was: {}&quot;, 12);
 }</code></pre>
-      <pre class="output"><code>2026-05-07T18:20:50.076704Z  INFO tracing_full: the answer was: 12</code></pre>
-    </div>
-  </section>
-
-  <section id="tracing_compact">
-    <h2><code>tracing-subscriber</code> &mdash; <code>Compact</code></h2>
-    <div class="pair">
-      <pre class="rust"><code>fn main() {
+            <pre class="output"><code>2026-05-07T18:25:59.376951Z  INFO tracing_full: the answer was: 12</code></pre>
+          </div>
+        </div>
+        <div class="subpanel" data-name="compact" hidden>
+          <div class="pair">
+            <pre class="rust"><code>fn main() {
     tracing_subscriber::fmt().compact().init();
     tracing::info!(&quot;the answer was: {}&quot;, 12);
 }</code></pre>
-      <pre class="output"><code>2026-05-07T18:20:50.252151Z  INFO tracing_compact: the answer was: 12</code></pre>
-    </div>
-  </section>
-
-  <section id="tracing_pretty">
-    <h2><code>tracing-subscriber</code> &mdash; <code>Pretty</code></h2>
-    <div class="pair">
-      <pre class="rust"><code>fn main() {
+            <pre class="output"><code>2026-05-07T18:25:59.635662Z  INFO tracing_compact: the answer was: 12</code></pre>
+          </div>
+        </div>
+        <div class="subpanel" data-name="pretty" hidden>
+          <div class="pair">
+            <pre class="rust"><code>fn main() {
     tracing_subscriber::fmt().pretty().init();
     tracing::info!(&quot;the answer was: {}&quot;, 12);
 }</code></pre>
-      <pre class="output"><code>  2026-05-07T18:20:50.422200Z  INFO tracing_pretty: the answer was: 12
+            <pre class="output"><code>  2026-05-07T18:25:59.919967Z  INFO tracing_pretty: the answer was: 12
     at src/bin/tracing_pretty.rs:3</code></pre>
-    </div>
-  </section>
-
-  <section id="tracing_json">
-    <h2><code>tracing-subscriber</code> &mdash; <code>Json</code></h2>
-    <div class="pair">
-      <pre class="rust"><code>fn main() {
+          </div>
+        </div>
+        <div class="subpanel" data-name="json" hidden>
+          <div class="pair">
+            <pre class="rust"><code>fn main() {
     tracing_subscriber::fmt().json().init();
     tracing::info!(&quot;the answer was: {}&quot;, 12);
 }</code></pre>
-      <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T18:20:50.595715Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;the answer was: 12&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
-    </div>
-  </section>
+            <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T18:26:00.220703Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;the answer was: 12&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  <section id="tracing_log_bridge">
-    <h2><code>tracing-log</code> bridge &mdash; <code>log::info!</code> rendered by <code>tracing-subscriber</code></h2>
-    <div class="pair">
-      <pre class="rust"><code>fn main() {
+    <section class="panel" data-name="bridge" hidden>
+      <p class="caption"><code>log::info!</code> routed through <code>tracing-subscriber</code> via <code>tracing_log::LogTracer</code>. Output uses tracing's format, not <code>env_logger</code>'s.</p>
+      <div class="pair">
+        <pre class="rust"><code>fn main() {
     tracing_log::LogTracer::init().expect(&quot;LogTracer init&quot;);
     let subscriber = tracing_subscriber::fmt().finish();
     tracing::subscriber::set_global_default(subscriber).expect(&quot;set global default&quot;);
     log::info!(&quot;the answer was: {}&quot;, 12);
 }</code></pre>
-      <pre class="output"><code>2026-05-07T18:20:50.779598Z  INFO tracing_log_bridge: the answer was: 12</code></pre>
-    </div>
-  </section>
+        <pre class="output"><code>2026-05-07T18:26:00.484863Z  INFO tracing_log_bridge: the answer was: 12</code></pre>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    function wireTabs(navSel) {
+      document.querySelectorAll(navSel).forEach(nav => {
+        const panels = nav.nextElementSibling;
+        if (!panels) return;
+        nav.addEventListener('click', e => {
+          const btn = e.target.closest('button[data-target]');
+          if (!btn) return;
+          const target = btn.dataset.target;
+          nav.querySelectorAll('button[data-target]').forEach(b =>
+            b.setAttribute('aria-selected', b === btn ? 'true' : 'false'));
+          panels.querySelectorAll(':scope > [data-name]').forEach(p => {
+            p.hidden = p.dataset.name !== target;
+          });
+        });
+      });
+    }
+    wireTabs('.tabs');
+    wireTabs('.subtabs');
+  </script>
 </body>
 </html>

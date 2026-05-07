@@ -21,10 +21,7 @@ body {
   max-width: 1100px;
 }
 
-header h1 {
-  margin-bottom: 0.25rem;
-}
-
+header h1 { margin-bottom: 0.25rem; }
 header p {
   color: var(--muted);
   margin-top: 0;
@@ -36,28 +33,70 @@ aside.finding {
   border-left: 3px solid var(--accent);
   background: #fff;
   padding: 0.75rem 1rem;
-  margin: 1.5rem 0 2.5rem;
+  margin: 1.5rem 0 2rem;
 }
-
 aside.finding h2 {
   margin-top: 0;
   font-size: 1.05rem;
 }
 
-section {
-  margin: 2rem 0;
-  padding-top: 1rem;
-  border-top: 1px solid var(--rule);
-}
-
-section h2 {
-  font-size: 1.15rem;
-  margin: 0 0 0.75rem;
-}
-
 code, pre {
   font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
   font-size: 0.875rem;
+}
+
+nav.tabs, nav.subtabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin: 1rem 0 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+nav.tabs button, nav.subtabs button {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  padding: 0.5rem 0.9rem;
+  font: inherit;
+  color: var(--muted);
+  cursor: pointer;
+  margin-bottom: -1px;
+}
+
+nav.tabs button code,
+nav.subtabs button code {
+  font-size: 0.95em;
+  color: inherit;
+}
+
+nav.tabs button[aria-selected="true"],
+nav.subtabs button[aria-selected="true"] {
+  color: var(--fg);
+  border-bottom-color: var(--accent);
+}
+
+nav.tabs button:hover,
+nav.subtabs button:hover { color: var(--fg); }
+
+nav.subtabs {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+nav.subtabs .hint {
+  color: var(--muted);
+  font-size: 0.85em;
+  margin-left: 0.25rem;
+}
+
+.panels { margin-top: 1rem; }
+.panel, .subpanel { padding-top: 1rem; }
+
+p.caption {
+  color: var(--muted);
+  margin: 0 0 0.75rem;
 }
 
 .pair {
@@ -84,6 +123,8 @@ pre.output {
   background: var(--output-bg);
   color: var(--output-fg);
 }
+
+[hidden] { display: none !important; }
 
 @media (max-width: 720px) {
   .pair { grid-template-columns: 1fr; }
