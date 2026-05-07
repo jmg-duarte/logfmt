@@ -2,13 +2,52 @@ use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
 
-const EXAMPLES: &[&str] = &[
-    "env_logger_default",
-    "tracing_full",
-    "tracing_compact",
-    "tracing_pretty",
-    "tracing_json",
-    "tracing_log_bridge",
+struct Logger {
+    bin: &'static str,
+    macro_path: &'static str,
+}
+
+const LOGGERS: &[Logger] = &[
+    Logger { bin: "env_logger_default", macro_path: "log::info" },
+    Logger { bin: "tracing_full",       macro_path: "tracing::info" },
+    Logger { bin: "tracing_compact",    macro_path: "tracing::info" },
+    Logger { bin: "tracing_pretty",     macro_path: "tracing::info" },
+    Logger { bin: "tracing_json",       macro_path: "tracing::info" },
+    Logger { bin: "tracing_log_bridge", macro_path: "log::info" },
+];
+
+struct Format {
+    kind: &'static str,
+    label: &'static str,
+    snippet: &'static str,
+}
+
+const FORMATS: &[Format] = &[
+    Format {
+        kind: "display",
+        label: "<code>{}</code> &mdash; <code>Display</code>",
+        snippet: "<MACRO>!(\"hello {}, the answer is {}\", \"world\", 42);",
+    },
+    Format {
+        kind: "debug",
+        label: "<code>{:?}</code> &mdash; <code>Debug</code>",
+        snippet: "let users = vec![\"alice\", \"bob\", \"charlie\"];\n<MACRO>!(\"users: {:?}\", users);",
+    },
+    Format {
+        kind: "pretty_debug",
+        label: "<code>{:#?}</code> &mdash; pretty <code>Debug</code>",
+        snippet: "#[derive(Debug)]\nstruct User { name: &'static str, age: u32, roles: Vec<&'static str> }\n\nlet user = User { name: \"alice\", age: 30, roles: vec![\"admin\", \"editor\"] };\n<MACRO>!(\"user: {:#?}\", user);",
+    },
+    Format {
+        kind: "named",
+        label: "<code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)",
+        snippet: "let name = \"alice\";\nlet age = 30;\n<MACRO>!(\"user {name} is {age} years old\");",
+    },
+    Format {
+        kind: "other",
+        label: "<code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary",
+        snippet: "let n = 255u32;\n<MACRO>!(\"hex={:x}  padded={:>5}  precision={:.2}  binary={:08b}\", n, n, 3.14159, n);",
+    },
 ];
 
 fn html_escape(s: &str) -> String {
@@ -54,8 +93,8 @@ fn main() {
 
     let mut build = Command::new("cargo");
     build.arg("build");
-    for name in EXAMPLES {
-        build.arg("--bin").arg(name);
+    for l in LOGGERS {
+        build.arg("--bin").arg(l.bin);
     }
     let status = build.status().expect("spawn cargo build");
     assert!(status.success(), "cargo build failed");
@@ -63,25 +102,45 @@ fn main() {
     let bin_dir = root.join("target/debug");
     let mut html = template;
 
-    for name in EXAMPLES {
-        let source = fs::read_to_string(root.join(format!("src/bin/{name}.rs")))
-            .expect("read example source");
+    for logger in LOGGERS {
+        let mut examples = String::new();
+        for fmt in FORMATS {
+            let out = Command::new(bin_dir.join(logger.bin))
+                .env("RUST_LOG", "info")
+                .env("FMT_KIND", fmt.kind)
+                .output()
+                .expect("exec example bin");
+            assert!(
+                out.status.success(),
+                "{} (FMT_KIND={}) exited non-zero",
+                logger.bin, fmt.kind
+            );
 
-        let out = Command::new(bin_dir.join(name))
-            .env("RUST_LOG", "info")
-            .output()
-            .expect("exec example bin");
+            let mut combined = Vec::new();
+            combined.extend_from_slice(&out.stdout);
+            combined.extend_from_slice(&out.stderr);
+            let raw = String::from_utf8_lossy(&combined);
+            let cleaned = strip_ansi(&raw);
 
-        let mut combined = Vec::new();
-        combined.extend_from_slice(&out.stdout);
-        combined.extend_from_slice(&out.stderr);
-        let raw = String::from_utf8_lossy(&combined);
-        let cleaned = strip_ansi(&raw);
+            let snippet = fmt.snippet.replace("<MACRO>", logger.macro_path);
 
-        let src_placeholder = format!("{{{{{}.source}}}}", name);
-        let out_placeholder = format!("{{{{{}.output}}}}", name);
-        html = html.replace(&src_placeholder, &html_escape(source.trim_end()));
-        html = html.replace(&out_placeholder, &html_escape(cleaned.trim_end()));
+            examples.push_str("        <article class=\"example\">\n");
+            examples.push_str(&format!("          <h3 class=\"example-label\">{}</h3>\n", fmt.label));
+            examples.push_str("          <div class=\"pair\">\n");
+            examples.push_str(&format!(
+                "            <pre class=\"rust\"><code>{}</code></pre>\n",
+                html_escape(&snippet)
+            ));
+            examples.push_str(&format!(
+                "            <pre class=\"output\"><code>{}</code></pre>\n",
+                html_escape(cleaned.trim_end())
+            ));
+            examples.push_str("          </div>\n");
+            examples.push_str("        </article>\n");
+        }
+
+        let placeholder = format!("{{{{{}.examples}}}}", logger.bin);
+        html = html.replace(&placeholder, examples.trim_end());
     }
 
     let out_path = root.join("index.html");

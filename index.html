@@ -8,7 +8,7 @@
 <body>
   <header>
     <h1>Rust log formatters</h1>
-    <p>For each formatter: the call site on the left, the rendered output on the right. Pick a tab to swap in another formatter.</p>
+    <p>For each logger configuration, the same five format-string variants &mdash; <code>{}</code>, <code>{:?}</code>, <code>{:#?}</code>, <code>{name}</code>, and other specs &mdash; rendered as call site (top) and captured output (bottom).</p>
   </header>
 
   <aside class="finding">
@@ -24,17 +24,61 @@
 
   <div class="panels">
     <section class="panel" data-name="env_logger">
-      <p class="caption">Default formatter, called as <code>env_logger::init()</code>.</p>
-      <div class="pair">
-        <pre class="rust"><code>fn main() {
-    env_logger::init();
-    log::info!(&quot;the answer was: {}&quot;, 12);
-}</code></pre>
-        <pre class="output"><code>[2026-05-07T18:25:59Z INFO  env_logger_default] the answer was: 12</code></pre>
-      </div>
+      <p class="caption">Initialized with <code>env_logger::init()</code>.</p>
+        <article class="example">
+          <h3 class="example-label"><code>{}</code> &mdash; <code>Display</code></h3>
+          <div class="pair">
+            <pre class="rust"><code>log::info!(&quot;hello {}, the answer is {}&quot;, &quot;world&quot;, 42);</code></pre>
+            <pre class="output"><code>[2026-05-07T18:49:31Z INFO  env_logger_default] hello world, the answer is 42</code></pre>
+          </div>
+        </article>
+        <article class="example">
+          <h3 class="example-label"><code>{:?}</code> &mdash; <code>Debug</code></h3>
+          <div class="pair">
+            <pre class="rust"><code>let users = vec![&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;];
+log::info!(&quot;users: {:?}&quot;, users);</code></pre>
+            <pre class="output"><code>[2026-05-07T18:49:31Z INFO  env_logger_default] users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]</code></pre>
+          </div>
+        </article>
+        <article class="example">
+          <h3 class="example-label"><code>{:#?}</code> &mdash; pretty <code>Debug</code></h3>
+          <div class="pair">
+            <pre class="rust"><code>#[derive(Debug)]
+struct User { name: &amp;'static str, age: u32, roles: Vec&lt;&amp;'static str&gt; }
+
+let user = User { name: &quot;alice&quot;, age: 30, roles: vec![&quot;admin&quot;, &quot;editor&quot;] };
+log::info!(&quot;user: {:#?}&quot;, user);</code></pre>
+            <pre class="output"><code>[2026-05-07T18:49:31Z INFO  env_logger_default] user: User {
+        name: &quot;alice&quot;,
+        age: 30,
+        roles: [
+            &quot;admin&quot;,
+            &quot;editor&quot;,
+        ],
+    }</code></pre>
+          </div>
+        </article>
+        <article class="example">
+          <h3 class="example-label"><code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)</h3>
+          <div class="pair">
+            <pre class="rust"><code>let name = &quot;alice&quot;;
+let age = 30;
+log::info!(&quot;user {name} is {age} years old&quot;);</code></pre>
+            <pre class="output"><code>[2026-05-07T18:49:31Z INFO  env_logger_default] user alice is 30 years old</code></pre>
+          </div>
+        </article>
+        <article class="example">
+          <h3 class="example-label"><code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary</h3>
+          <div class="pair">
+            <pre class="rust"><code>let n = 255u32;
+log::info!(&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;, n, n, 3.14159, n);</code></pre>
+            <pre class="output"><code>[2026-05-07T18:49:31Z INFO  env_logger_default] hex=ff  padded=  255  precision=3.14  binary=11111111</code></pre>
+          </div>
+        </article>
     </section>
 
     <section class="panel" data-name="tracing-subscriber" hidden>
+      <p class="caption">Initialized with <code>tracing_subscriber::fmt()</code> &mdash; one variant per sub-tab.</p>
       <nav class="subtabs" role="tablist" aria-label="tracing-subscriber formatter">
         <button class="subtab" type="button" data-target="full" aria-selected="true">Full <span class="hint">(default)</span></button>
         <button class="subtab" type="button" data-target="compact" aria-selected="false">Compact</button>
@@ -43,56 +87,266 @@
       </nav>
       <div class="subpanels">
         <div class="subpanel" data-name="full">
+        <article class="example">
+          <h3 class="example-label"><code>{}</code> &mdash; <code>Display</code></h3>
           <div class="pair">
-            <pre class="rust"><code>fn main() {
-    tracing_subscriber::fmt().init();
-    tracing::info!(&quot;the answer was: {}&quot;, 12);
-}</code></pre>
-            <pre class="output"><code>2026-05-07T18:25:59.376951Z  INFO tracing_full: the answer was: 12</code></pre>
+            <pre class="rust"><code>tracing::info!(&quot;hello {}, the answer is {}&quot;, &quot;world&quot;, 42);</code></pre>
+            <pre class="output"><code>2026-05-07T18:49:31.971689Z  INFO tracing_full: hello world, the answer is 42</code></pre>
           </div>
+        </article>
+        <article class="example">
+          <h3 class="example-label"><code>{:?}</code> &mdash; <code>Debug</code></h3>
+          <div class="pair">
+            <pre class="rust"><code>let users = vec![&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;];
+tracing::info!(&quot;users: {:?}&quot;, users);</code></pre>
+            <pre class="output"><code>2026-05-07T18:49:31.976002Z  INFO tracing_full: users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]</code></pre>
+          </div>
+        </article>
+        <article class="example">
+          <h3 class="example-label"><code>{:#?}</code> &mdash; pretty <code>Debug</code></h3>
+          <div class="pair">
+            <pre class="rust"><code>#[derive(Debug)]
+struct User { name: &amp;'static str, age: u32, roles: Vec&lt;&amp;'static str&gt; }
+
+let user = User { name: &quot;alice&quot;, age: 30, roles: vec![&quot;admin&quot;, &quot;editor&quot;] };
+tracing::info!(&quot;user: {:#?}&quot;, user);</code></pre>
+            <pre class="output"><code>2026-05-07T18:49:31.978848Z  INFO tracing_full: user: User {
+    name: &quot;alice&quot;,
+    age: 30,
+    roles: [
+        &quot;admin&quot;,
+        &quot;editor&quot;,
+    ],
+}</code></pre>
+          </div>
+        </article>
+        <article class="example">
+          <h3 class="example-label"><code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)</h3>
+          <div class="pair">
+            <pre class="rust"><code>let name = &quot;alice&quot;;
+let age = 30;
+tracing::info!(&quot;user {name} is {age} years old&quot;);</code></pre>
+            <pre class="output"><code>2026-05-07T18:49:31.981279Z  INFO tracing_full: user alice is 30 years old</code></pre>
+          </div>
+        </article>
+        <article class="example">
+          <h3 class="example-label"><code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary</h3>
+          <div class="pair">
+            <pre class="rust"><code>let n = 255u32;
+tracing::info!(&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;, n, n, 3.14159, n);</code></pre>
+            <pre class="output"><code>2026-05-07T18:49:31.983938Z  INFO tracing_full: hex=ff  padded=  255  precision=3.14  binary=11111111</code></pre>
+          </div>
+        </article>
         </div>
         <div class="subpanel" data-name="compact" hidden>
+        <article class="example">
+          <h3 class="example-label"><code>{}</code> &mdash; <code>Display</code></h3>
           <div class="pair">
-            <pre class="rust"><code>fn main() {
-    tracing_subscriber::fmt().compact().init();
-    tracing::info!(&quot;the answer was: {}&quot;, 12);
-}</code></pre>
-            <pre class="output"><code>2026-05-07T18:25:59.635662Z  INFO tracing_compact: the answer was: 12</code></pre>
+            <pre class="rust"><code>tracing::info!(&quot;hello {}, the answer is {}&quot;, &quot;world&quot;, 42);</code></pre>
+            <pre class="output"><code>2026-05-07T18:49:32.113791Z  INFO tracing_compact: hello world, the answer is 42</code></pre>
           </div>
+        </article>
+        <article class="example">
+          <h3 class="example-label"><code>{:?}</code> &mdash; <code>Debug</code></h3>
+          <div class="pair">
+            <pre class="rust"><code>let users = vec![&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;];
+tracing::info!(&quot;users: {:?}&quot;, users);</code></pre>
+            <pre class="output"><code>2026-05-07T18:49:32.116833Z  INFO tracing_compact: users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]</code></pre>
+          </div>
+        </article>
+        <article class="example">
+          <h3 class="example-label"><code>{:#?}</code> &mdash; pretty <code>Debug</code></h3>
+          <div class="pair">
+            <pre class="rust"><code>#[derive(Debug)]
+struct User { name: &amp;'static str, age: u32, roles: Vec&lt;&amp;'static str&gt; }
+
+let user = User { name: &quot;alice&quot;, age: 30, roles: vec![&quot;admin&quot;, &quot;editor&quot;] };
+tracing::info!(&quot;user: {:#?}&quot;, user);</code></pre>
+            <pre class="output"><code>2026-05-07T18:49:32.119169Z  INFO tracing_compact: user: User {
+    name: &quot;alice&quot;,
+    age: 30,
+    roles: [
+        &quot;admin&quot;,
+        &quot;editor&quot;,
+    ],
+}</code></pre>
+          </div>
+        </article>
+        <article class="example">
+          <h3 class="example-label"><code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)</h3>
+          <div class="pair">
+            <pre class="rust"><code>let name = &quot;alice&quot;;
+let age = 30;
+tracing::info!(&quot;user {name} is {age} years old&quot;);</code></pre>
+            <pre class="output"><code>2026-05-07T18:49:32.121658Z  INFO tracing_compact: user alice is 30 years old</code></pre>
+          </div>
+        </article>
+        <article class="example">
+          <h3 class="example-label"><code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary</h3>
+          <div class="pair">
+            <pre class="rust"><code>let n = 255u32;
+tracing::info!(&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;, n, n, 3.14159, n);</code></pre>
+            <pre class="output"><code>2026-05-07T18:49:32.124044Z  INFO tracing_compact: hex=ff  padded=  255  precision=3.14  binary=11111111</code></pre>
+          </div>
+        </article>
         </div>
         <div class="subpanel" data-name="pretty" hidden>
+        <article class="example">
+          <h3 class="example-label"><code>{}</code> &mdash; <code>Display</code></h3>
           <div class="pair">
-            <pre class="rust"><code>fn main() {
-    tracing_subscriber::fmt().pretty().init();
-    tracing::info!(&quot;the answer was: {}&quot;, 12);
-}</code></pre>
-            <pre class="output"><code>  2026-05-07T18:25:59.919967Z  INFO tracing_pretty: the answer was: 12
-    at src/bin/tracing_pretty.rs:3</code></pre>
+            <pre class="rust"><code>tracing::info!(&quot;hello {}, the answer is {}&quot;, &quot;world&quot;, 42);</code></pre>
+            <pre class="output"><code>  2026-05-07T18:49:32.254601Z  INFO tracing_pretty: hello world, the answer is 42
+    at src/bin/tracing_pretty.rs:14</code></pre>
           </div>
+        </article>
+        <article class="example">
+          <h3 class="example-label"><code>{:?}</code> &mdash; <code>Debug</code></h3>
+          <div class="pair">
+            <pre class="rust"><code>let users = vec![&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;];
+tracing::info!(&quot;users: {:?}&quot;, users);</code></pre>
+            <pre class="output"><code>  2026-05-07T18:49:32.258139Z  INFO tracing_pretty: users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]
+    at src/bin/tracing_pretty.rs:18</code></pre>
+          </div>
+        </article>
+        <article class="example">
+          <h3 class="example-label"><code>{:#?}</code> &mdash; pretty <code>Debug</code></h3>
+          <div class="pair">
+            <pre class="rust"><code>#[derive(Debug)]
+struct User { name: &amp;'static str, age: u32, roles: Vec&lt;&amp;'static str&gt; }
+
+let user = User { name: &quot;alice&quot;, age: 30, roles: vec![&quot;admin&quot;, &quot;editor&quot;] };
+tracing::info!(&quot;user: {:#?}&quot;, user);</code></pre>
+            <pre class="output"><code>  2026-05-07T18:49:32.260034Z  INFO tracing_pretty: user: User {
+    name: &quot;alice&quot;,
+    age: 30,
+    roles: [
+        &quot;admin&quot;,
+        &quot;editor&quot;,
+    ],
+}
+    at src/bin/tracing_pretty.rs:22</code></pre>
+          </div>
+        </article>
+        <article class="example">
+          <h3 class="example-label"><code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)</h3>
+          <div class="pair">
+            <pre class="rust"><code>let name = &quot;alice&quot;;
+let age = 30;
+tracing::info!(&quot;user {name} is {age} years old&quot;);</code></pre>
+            <pre class="output"><code>  2026-05-07T18:49:32.262040Z  INFO tracing_pretty: user alice is 30 years old
+    at src/bin/tracing_pretty.rs:27</code></pre>
+          </div>
+        </article>
+        <article class="example">
+          <h3 class="example-label"><code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary</h3>
+          <div class="pair">
+            <pre class="rust"><code>let n = 255u32;
+tracing::info!(&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;, n, n, 3.14159, n);</code></pre>
+            <pre class="output"><code>  2026-05-07T18:49:32.263624Z  INFO tracing_pretty: hex=ff  padded=  255  precision=3.14  binary=11111111
+    at src/bin/tracing_pretty.rs:31</code></pre>
+          </div>
+        </article>
         </div>
         <div class="subpanel" data-name="json" hidden>
+        <article class="example">
+          <h3 class="example-label"><code>{}</code> &mdash; <code>Display</code></h3>
           <div class="pair">
-            <pre class="rust"><code>fn main() {
-    tracing_subscriber::fmt().json().init();
-    tracing::info!(&quot;the answer was: {}&quot;, 12);
-}</code></pre>
-            <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T18:26:00.220703Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;the answer was: 12&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
+            <pre class="rust"><code>tracing::info!(&quot;hello {}, the answer is {}&quot;, &quot;world&quot;, 42);</code></pre>
+            <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T18:49:32.398454Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;hello world, the answer is 42&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
           </div>
+        </article>
+        <article class="example">
+          <h3 class="example-label"><code>{:?}</code> &mdash; <code>Debug</code></h3>
+          <div class="pair">
+            <pre class="rust"><code>let users = vec![&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;];
+tracing::info!(&quot;users: {:?}&quot;, users);</code></pre>
+            <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T18:49:32.401008Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;users: [\&quot;alice\&quot;, \&quot;bob\&quot;, \&quot;charlie\&quot;]&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
+          </div>
+        </article>
+        <article class="example">
+          <h3 class="example-label"><code>{:#?}</code> &mdash; pretty <code>Debug</code></h3>
+          <div class="pair">
+            <pre class="rust"><code>#[derive(Debug)]
+struct User { name: &amp;'static str, age: u32, roles: Vec&lt;&amp;'static str&gt; }
+
+let user = User { name: &quot;alice&quot;, age: 30, roles: vec![&quot;admin&quot;, &quot;editor&quot;] };
+tracing::info!(&quot;user: {:#?}&quot;, user);</code></pre>
+            <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T18:49:32.403530Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;user: User {\n    name: \&quot;alice\&quot;,\n    age: 30,\n    roles: [\n        \&quot;admin\&quot;,\n        \&quot;editor\&quot;,\n    ],\n}&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
+          </div>
+        </article>
+        <article class="example">
+          <h3 class="example-label"><code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)</h3>
+          <div class="pair">
+            <pre class="rust"><code>let name = &quot;alice&quot;;
+let age = 30;
+tracing::info!(&quot;user {name} is {age} years old&quot;);</code></pre>
+            <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T18:49:32.405704Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;user alice is 30 years old&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
+          </div>
+        </article>
+        <article class="example">
+          <h3 class="example-label"><code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary</h3>
+          <div class="pair">
+            <pre class="rust"><code>let n = 255u32;
+tracing::info!(&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;, n, n, 3.14159, n);</code></pre>
+            <pre class="output"><code>{&quot;timestamp&quot;:&quot;2026-05-07T18:49:32.407716Z&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;fields&quot;:{&quot;message&quot;:&quot;hex=ff  padded=  255  precision=3.14  binary=11111111&quot;},&quot;target&quot;:&quot;tracing_json&quot;}</code></pre>
+          </div>
+        </article>
         </div>
       </div>
     </section>
 
     <section class="panel" data-name="bridge" hidden>
       <p class="caption"><code>log::info!</code> routed through <code>tracing-subscriber</code> via <code>tracing_log::LogTracer</code>. Output uses tracing's format, not <code>env_logger</code>'s.</p>
-      <div class="pair">
-        <pre class="rust"><code>fn main() {
-    tracing_log::LogTracer::init().expect(&quot;LogTracer init&quot;);
-    let subscriber = tracing_subscriber::fmt().finish();
-    tracing::subscriber::set_global_default(subscriber).expect(&quot;set global default&quot;);
-    log::info!(&quot;the answer was: {}&quot;, 12);
+        <article class="example">
+          <h3 class="example-label"><code>{}</code> &mdash; <code>Display</code></h3>
+          <div class="pair">
+            <pre class="rust"><code>log::info!(&quot;hello {}, the answer is {}&quot;, &quot;world&quot;, 42);</code></pre>
+            <pre class="output"><code>2026-05-07T18:49:32.567809Z  INFO tracing_log_bridge: hello world, the answer is 42</code></pre>
+          </div>
+        </article>
+        <article class="example">
+          <h3 class="example-label"><code>{:?}</code> &mdash; <code>Debug</code></h3>
+          <div class="pair">
+            <pre class="rust"><code>let users = vec![&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;];
+log::info!(&quot;users: {:?}&quot;, users);</code></pre>
+            <pre class="output"><code>2026-05-07T18:49:32.569967Z  INFO tracing_log_bridge: users: [&quot;alice&quot;, &quot;bob&quot;, &quot;charlie&quot;]</code></pre>
+          </div>
+        </article>
+        <article class="example">
+          <h3 class="example-label"><code>{:#?}</code> &mdash; pretty <code>Debug</code></h3>
+          <div class="pair">
+            <pre class="rust"><code>#[derive(Debug)]
+struct User { name: &amp;'static str, age: u32, roles: Vec&lt;&amp;'static str&gt; }
+
+let user = User { name: &quot;alice&quot;, age: 30, roles: vec![&quot;admin&quot;, &quot;editor&quot;] };
+log::info!(&quot;user: {:#?}&quot;, user);</code></pre>
+            <pre class="output"><code>2026-05-07T18:49:32.571768Z  INFO tracing_log_bridge: user: User {
+    name: &quot;alice&quot;,
+    age: 30,
+    roles: [
+        &quot;admin&quot;,
+        &quot;editor&quot;,
+    ],
 }</code></pre>
-        <pre class="output"><code>2026-05-07T18:26:00.484863Z  INFO tracing_log_bridge: the answer was: 12</code></pre>
-      </div>
+          </div>
+        </article>
+        <article class="example">
+          <h3 class="example-label"><code>{name}</code> &mdash; implicit named-argument capture (Rust 2021+)</h3>
+          <div class="pair">
+            <pre class="rust"><code>let name = &quot;alice&quot;;
+let age = 30;
+log::info!(&quot;user {name} is {age} years old&quot;);</code></pre>
+            <pre class="output"><code>2026-05-07T18:49:32.573550Z  INFO tracing_log_bridge: user alice is 30 years old</code></pre>
+          </div>
+        </article>
+        <article class="example">
+          <h3 class="example-label"><code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary</h3>
+          <div class="pair">
+            <pre class="rust"><code>let n = 255u32;
+log::info!(&quot;hex={:x}  padded={:&gt;5}  precision={:.2}  binary={:08b}&quot;, n, n, 3.14159, n);</code></pre>
+            <pre class="output"><code>2026-05-07T18:49:32.575448Z  INFO tracing_log_bridge: hex=ff  padded=  255  precision=3.14  binary=11111111</code></pre>
+          </div>
+        </article>
     </section>
   </div>
 
