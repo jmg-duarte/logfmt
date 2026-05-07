@@ -1,0 +1,11 @@
+[package]
+name = "logfmt"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+log = "0.4"
+env_logger = "0.11"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["fmt", "json", "ansi"] }
+tracing-log = "0.2"

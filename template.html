@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Rust log formatters</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Rust log formatters</h1>
+    <p>For each formatter: the call site on the left, the rendered output on the right. Outputs are captured from real binaries by <code>src/bin/gen.rs</code>; see <a href="https://github.com/jmg-duarte/logfmt">the source</a>.</p>
+  </header>
+
+  <aside class="finding">
+    <h2>Do <code>log</code> and <code>tracing</code> share the same format?</h2>
+    <p><strong>No.</strong> Their default formatters produce visibly different strings for the same call &mdash; compare the <a href="#env_logger_default"><code>env_logger</code> default</a> with <a href="#tracing_full"><code>tracing-subscriber</code>'s default</a>. The <a href="#tracing_log_bridge">bridge example</a> shows what happens when <code>log::info!</code> is routed through <code>tracing-subscriber</code> via <code>LogTracer</code>: the output uses tracing's format, not <code>env_logger</code>'s.</p>
+  </aside>
+
+  <section id="env_logger_default">
+    <h2><code>env_logger</code> &mdash; default</h2>
+    <div class="pair">
+      <pre class="rust"><code>{{env_logger_default.source}}</code></pre>
+      <pre class="output"><code>{{env_logger_default.output}}</code></pre>
+    </div>
+  </section>
+
+  <section id="tracing_full">
+    <h2><code>tracing-subscriber</code> &mdash; <code>Full</code> (default)</h2>
+    <div class="pair">
+      <pre class="rust"><code>{{tracing_full.source}}</code></pre>
+      <pre class="output"><code>{{tracing_full.output}}</code></pre>
+    </div>
+  </section>
+
+  <section id="tracing_compact">
+    <h2><code>tracing-subscriber</code> &mdash; <code>Compact</code></h2>
+    <div class="pair">
+      <pre class="rust"><code>{{tracing_compact.source}}</code></pre>
+      <pre class="output"><code>{{tracing_compact.output}}</code></pre>
+    </div>
+  </section>
+
+  <section id="tracing_pretty">
+    <h2><code>tracing-subscriber</code> &mdash; <code>Pretty</code></h2>
+    <div class="pair">
+      <pre class="rust"><code>{{tracing_pretty.source}}</code></pre>
+      <pre class="output"><code>{{tracing_pretty.output}}</code></pre>
+    </div>
+  </section>
+
+  <section id="tracing_json">
+    <h2><code>tracing-subscriber</code> &mdash; <code>Json</code></h2>
+    <div class="pair">
+      <pre class="rust"><code>{{tracing_json.source}}</code></pre>
+      <pre class="output"><code>{{tracing_json.output}}</code></pre>
+    </div>
+  </section>
+
+  <section id="tracing_log_bridge">
+    <h2><code>tracing-log</code> bridge &mdash; <code>log::info!</code> rendered by <code>tracing-subscriber</code></h2>
+    <div class="pair">
+      <pre class="rust"><code>{{tracing_log_bridge.source}}</code></pre>
+      <pre class="output"><code>{{tracing_log_bridge.output}}</code></pre>
+    </div>
+  </section>
+</body>
+</html>
