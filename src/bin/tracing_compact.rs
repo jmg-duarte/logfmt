@@ -30,6 +30,11 @@ fn main() {
             let n = 255u32;
             tracing::info!("hex={:x}  padded={:>5}  precision={:.2}  binary={:08b}", n, n, 3.14159, n);
         }
+        Ok("fields") => {
+            tracing::info!(answer = 42, "plain value");
+            tracing::info!(items = ?vec![1, 2, 3], "? sigil = Debug");
+            tracing::info!(name = %"world", "% sigil = Display");
+        }
         _ => panic!("set FMT_KIND"),
     }
 }

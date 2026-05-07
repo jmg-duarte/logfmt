@@ -55,6 +55,14 @@ const FORMATS: &[Format] = &[
         label: "<code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary",
         snippet: "let n = 255u32;\n<MACRO>!(\"hex={:x}  padded={:>5}  precision={:.2}  binary={:08b}\", n, n, 3.14159, n);",
     },
+    Format {
+        kind: "fields",
+        label: "<code>info!(field = value)</code>, <code>?value</code> (Debug), <code>%value</code> (Display) &mdash; structured fields with sigils",
+        // <KV_SEP> renders as ',' for tracing and ';' for log (kv requires a semicolon).
+        // <F_DBG> / <F_DISP> render the field-with-sigil form for the active macro family
+        // (tracing puts the sigil before the value; log puts it before the equals).
+        snippet: "<MACRO>!(answer = 42<KV_SEP> \"plain value\");\n<MACRO>!(<F_DBG><KV_SEP> \"? sigil = Debug\");\n<MACRO>!(<F_DISP><KV_SEP> \"% sigil = Display\");",
+    },
 ];
 
 fn html_escape(s: &str) -> String {
@@ -238,7 +246,23 @@ fn main() {
             let raw = String::from_utf8_lossy(&combined);
             let cleaned = strip_ansi(&raw);
 
-            let snippet = fmt.snippet.replace("<MACRO>", logger.macro_path);
+            let is_log = logger.macro_path == "log::info";
+            let kv_sep = if is_log { ";" } else { "," };
+            let f_dbg = if is_log {
+                "items:? = vec![1, 2, 3]"
+            } else {
+                "items = ?vec![1, 2, 3]"
+            };
+            let f_disp = if is_log {
+                "name:% = \"world\""
+            } else {
+                "name = %\"world\""
+            };
+            let snippet = fmt.snippet
+                .replace("<MACRO>", logger.macro_path)
+                .replace("<KV_SEP>", kv_sep)
+                .replace("<F_DBG>", f_dbg)
+                .replace("<F_DISP>", f_disp);
             let _ = (li, fi);
             // Initial state matches data-active-top=tracing-subscriber + data-active-sub=full.
             let hidden_attr = if logger.bin == "tracing_full" { "" } else { " hidden" };

@@ -32,6 +32,11 @@ fn main() {
             let n = 255u32;
             log::info!("hex={:x}  padded={:>5}  precision={:.2}  binary={:08b}", n, n, 3.14159, n);
         }
+        Ok("fields") => {
+            log::info!(answer = 42; "plain value");
+            log::info!(items:? = vec![1, 2, 3]; "? sigil = Debug");
+            log::info!(name:% = "world"; "% sigil = Display");
+        }
         _ => panic!("set FMT_KIND"),
     }
 }
