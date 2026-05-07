@@ -2,9 +2,9 @@
   --bg: #fafaf9;
   --fg: #1c1c1c;
   --muted: #666;
-  --rust-bg: #f3f1ed;
-  --output-bg: #1f2430;
-  --output-fg: #e6e6e6;
+  /* Code block: slightly lighter than page. Output: slightly darker. */
+  --rust-bg: #ffffff;
+  --output-bg: #f2efe8;
   --accent: #b25000;
   --rule: #d8d4cc;
 }
@@ -18,7 +18,6 @@
   --muted: #9a9aa3;
   --rust-bg: #2b303b;
   --output-bg: #0d0f13;
-  --output-fg: #d8d8db;
   --accent: #ff9c5a;
   --rule: #2a2f37;
 }
@@ -161,13 +160,13 @@ article.cell:last-child { margin-bottom: 0; }
 }
 
 pre.rust {
-  background: var(--rust-bg);
+  background-color: var(--rust-bg);
   color: var(--fg);
 }
 
 pre.output {
-  background: var(--output-bg);
-  color: var(--output-fg);
+  background-color: var(--output-bg);
+  color: var(--fg);
   border-top: 1px solid var(--rule);
 }
 
