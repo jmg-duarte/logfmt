@@ -67,7 +67,6 @@ button.theme-toggle {
   font: inherit;
   font-size: 0.875rem;
   flex-shrink: 0;
-  margin-top: 0.25rem;
 }
 
 button.theme-toggle:hover {
