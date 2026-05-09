@@ -15,12 +15,30 @@ struct Logger {
 }
 
 const LOGGERS: &[Logger] = &[
-    Logger { bin: "env_logger_default", macro_path: "log::info" },
-    Logger { bin: "tracing_full",       macro_path: "tracing::info" },
-    Logger { bin: "tracing_compact",    macro_path: "tracing::info" },
-    Logger { bin: "tracing_pretty",     macro_path: "tracing::info" },
-    Logger { bin: "tracing_json",       macro_path: "tracing::info" },
-    Logger { bin: "tracing_log_bridge", macro_path: "log::info" },
+    Logger {
+        bin: "env_logger_default",
+        macro_path: "log::info",
+    },
+    Logger {
+        bin: "tracing_full",
+        macro_path: "tracing::info",
+    },
+    Logger {
+        bin: "tracing_compact",
+        macro_path: "tracing::info",
+    },
+    Logger {
+        bin: "tracing_pretty",
+        macro_path: "tracing::info",
+    },
+    Logger {
+        bin: "tracing_json",
+        macro_path: "tracing::info",
+    },
+    Logger {
+        bin: "tracing_log_bridge",
+        macro_path: "log::info",
+    },
 ];
 
 struct Format {
@@ -51,9 +69,19 @@ const FORMATS: &[Format] = &[
         snippet: "let name = \"alice\";\nlet age = 30;\n<MACRO>!(\"user {name} is {age} years old\");",
     },
     Format {
-        kind: "other",
-        label: "<code>{:x}</code>, <code>{:&gt;5}</code>, <code>{:.2}</code>, <code>{:08b}</code> &mdash; width, precision, hex, binary",
-        snippet: "let n = 255u32;\n<MACRO>!(\"hex={:x}  padded={:>5}  precision={:.2}  binary={:08b}\", n, n, 3.14159, n);",
+        kind: "numeric_base",
+        label: "<code>{:x}</code>, <code>{:o}</code>, <code>{:b}</code> &mdash; hex, octal, binary",
+        snippet: "let n = 255u32;\n<MACRO>!(\"hex={:x}  octal={:o}  binary={:b}\", n, n, n);",
+    },
+    Format {
+        kind: "width",
+        label: "<code>{:&gt;5}</code> &mdash; padding",
+        snippet: "let n = 255u32;\n<MACRO>!(\"padded={:>5}\", n);",
+    },
+    Format {
+        kind: "precision",
+        label: "<code>{:.2}</code> &mdash; precision",
+        snippet: "<MACRO>!(\"precision={:.2}\", 3.14159);",
     },
     Format {
         kind: "fields",
@@ -183,8 +211,7 @@ fn strip_ansi(input: &str) -> String {
 
 fn main() {
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    let template = fs::read_to_string(root.join("template.html"))
-        .expect("read template.html");
+    let template = fs::read_to_string(root.join("template.html")).expect("read template.html");
 
     let mut build = Command::new("cargo");
     build.arg("build");
@@ -211,10 +238,10 @@ fn main() {
         .get("base16-ocean.dark")
         .expect("base16-ocean.dark theme");
 
-    let css_light = css_for_theme_with_class_style(theme_light, SYN_CLASS_STYLE)
-        .expect("light theme css");
-    let css_dark_raw = css_for_theme_with_class_style(theme_dark, SYN_CLASS_STYLE)
-        .expect("dark theme css");
+    let css_light =
+        css_for_theme_with_class_style(theme_light, SYN_CLASS_STYLE).expect("light theme css");
+    let css_dark_raw =
+        css_for_theme_with_class_style(theme_dark, SYN_CLASS_STYLE).expect("dark theme css");
     let css_dark = scope_css(&css_dark_raw, ":root.dark");
 
     let mut syntax_css = String::new();
@@ -237,7 +264,8 @@ fn main() {
             assert!(
                 out.status.success(),
                 "{} (FMT_KIND={}) exited non-zero",
-                logger.bin, fmt.kind
+                logger.bin,
+                fmt.kind
             );
 
             let mut combined = Vec::new();
@@ -258,14 +286,19 @@ fn main() {
             } else {
                 "name = %\"world\""
             };
-            let snippet = fmt.snippet
+            let snippet = fmt
+                .snippet
                 .replace("<MACRO>", logger.macro_path)
                 .replace("<KV_SEP>", kv_sep)
                 .replace("<F_DBG>", f_dbg)
                 .replace("<F_DISP>", f_disp);
             let _ = (li, fi);
             // Initial state matches data-active-top=tracing-subscriber + data-active-sub=full.
-            let hidden_attr = if logger.bin == "tracing_full" { "" } else { " hidden" };
+            let hidden_attr = if logger.bin == "tracing_full" {
+                ""
+            } else {
+                " hidden"
+            };
 
             cells.push_str(&format!(
                 "    <article class=\"cell\" data-logger=\"{logger}\" data-format=\"{format}\"{hidden}>\n",
@@ -273,7 +306,10 @@ fn main() {
                 format = fmt.kind,
                 hidden = hidden_attr,
             ));
-            cells.push_str(&format!("      <h3 class=\"cell-label\">{}</h3>\n", fmt.label));
+            cells.push_str(&format!(
+                "      <h3 class=\"cell-label\">{}</h3>\n",
+                fmt.label
+            ));
             cells.push_str("      <div class=\"pair\">\n");
             cells.push_str(&format!(
                 "        <pre class=\"rust\"><code>{}</code></pre>\n",

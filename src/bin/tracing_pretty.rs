@@ -26,9 +26,16 @@ fn main() {
             let age = 30;
             tracing::info!("user {name} is {age} years old");
         }
-        Ok("other") => {
+        Ok("numeric_base") => {
             let n = 255u32;
-            tracing::info!("hex={:x}  padded={:>5}  precision={:.2}  binary={:08b}", n, n, 3.14159, n);
+            tracing::info!("hex={:x}  octal={:o}  binary={:b}", n, n, n);
+        }
+        Ok("width") => {
+            let n = 255u32;
+            tracing::info!("padded={:>5}", n);
+        }
+        Ok("precision") => {
+            tracing::info!("precision={:.2}", 3.14159);
         }
         Ok("fields") => {
             tracing::info!(answer = 42, "plain value");

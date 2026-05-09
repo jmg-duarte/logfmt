@@ -26,9 +26,16 @@ fn main() {
             let age = 30;
             log::info!("user {name} is {age} years old");
         }
-        Ok("other") => {
+        Ok("numeric_base") => {
             let n = 255u32;
-            log::info!("hex={:x}  padded={:>5}  precision={:.2}  binary={:08b}", n, n, 3.14159, n);
+            log::info!("hex={:x}  octal={:o}  binary={:b}", n, n, n);
+        }
+        Ok("width") => {
+            let n = 255u32;
+            log::info!("padded={:>5}", n);
+        }
+        Ok("precision") => {
+            log::info!("precision={:.2}", 3.14159);
         }
         Ok("fields") => {
             log::info!(answer = 42; "plain value");
