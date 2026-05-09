@@ -49,6 +49,13 @@ header h1 {
   font-weight: 400;
 }
 
+header h1 .tagline {
+  font-family: "EB Garamond", Georgia, serif;
+  font-weight: 400;
+  font-variation-settings: normal;
+  color: var(--muted, inherit);
+}
+
 button.theme-toggle {
   appearance: none;
   background: transparent;
